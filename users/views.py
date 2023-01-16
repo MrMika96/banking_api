@@ -107,7 +107,18 @@ class UserCredentialsUpdateView(UpdateAPIView):
     def get_object(self):
         return self.request.user
 
-
+@extend_schema_view(
+    list=extend_schema(description="Route for obtaining a list of opponents of a user authorized in the system",
+                       summary="Get all user contacts"),
+    retrieve=extend_schema(description="Route to get a specific contact by its id",
+                           summary="Get a contact"),
+    create=extend_schema(description="Route to add one user to the contact list",
+                         summary="Adding a contact"),
+    update=extend_schema(description="Route to change the status of a contact (favorite or not) by its id",
+                         summary="Changing the status of a contact"),
+    destroy=extend_schema(description="Route to remove a user from the contact list by his id",
+                          summary="Deleting a contact")
+)
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
@@ -133,9 +144,9 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    post=extend_schema(description="Роут для загрузки пачки юзеров (по их номеру телефона) "
-                                   "в список контактов авторизованного юзера",
-                       summary="Загрузить пачку контактов")
+    post=extend_schema(description="Route for uploading a bunch of users (by their phone number) "
+                                   "to the authorized user's contact list",
+                       summary="Download a pack of contacts")
 )
 class ContactBulkCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]

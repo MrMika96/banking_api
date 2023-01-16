@@ -1,8 +1,10 @@
 import datetime
+from functools import cached_property
 
 from django.contrib.auth.models import update_last_login
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -51,6 +53,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             attrs["phone"] = self.Meta.model.normalize_phone(attrs["phone"])
         return attrs
 
+    @extend_schema_field({"type": "string"})
     def get_age(self, obj):
         return datetime.datetime.utcnow().year - obj.birth_date.year if obj.birth_date else ""
 
@@ -162,7 +165,7 @@ class ContactProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['contact_id', 'first_name', 'middle_name',
-                  'last_name', 'position', 'image',
+                  'last_name', 'image',
                   'email', 'phone']
 
 
@@ -172,8 +175,7 @@ class ContactProfileShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['contact_id', 'first_name', 'last_name',
-                  'position', 'image']
+        fields = ['contact_id', 'first_name', 'last_name', 'image']
 
 
 class ContactSerializer(serializers.ModelSerializer):
