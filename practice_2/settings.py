@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'images',
+    'banks',
+    'credit_cards'
 ]
 
 MIDDLEWARE = [

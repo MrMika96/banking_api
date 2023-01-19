@@ -12,7 +12,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to=get_upload_to, null=False, blank=False)
 
     class Meta:
-        db_table = "image"
+        db_table = "images"
 
     def __str__(self):
         return self.image.name

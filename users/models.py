@@ -105,3 +105,4 @@ class Contact(models.Model):
 
     class Meta:
         unique_together = ['user', 'contact']
+        db_table = "contacts"
