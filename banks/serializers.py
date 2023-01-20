@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from banks.models import Bank
+from banks.models import Bank, PaymentSystem
 
 
 class BanksSerializer(serializers.ModelSerializer):
@@ -8,4 +8,12 @@ class BanksSerializer(serializers.ModelSerializer):
         model = Bank
         fields = [
             'id', 'name', 'type', 'number'
+        ]
+
+
+class PaymentSystemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentSystem
+        fields = [
+            'id', 'name', 'number'
         ]
