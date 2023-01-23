@@ -48,10 +48,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ["first_name", "middle_name", "last_name",
                   "phone", "birth_date", "age"]
 
-    def validate(self, attrs):
-        if attrs.get("phone"):
-            attrs["phone"] = self.Meta.model.normalize_phone(attrs["phone"])
-        return attrs
+    def validate_phone(self, phone):
+        if phone:
+            phone = self.Meta.model.normalize_phone(phone)
+        return phone
 
     @extend_schema_field({"type": "string"})
     def get_age(self, obj):
