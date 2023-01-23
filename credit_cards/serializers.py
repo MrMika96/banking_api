@@ -7,14 +7,18 @@ from credit_cards.models import CreditCard
 
 class CreditCardSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    bank = serializers.HiddenField(default="")
-    payment_system = serializers.HiddenField(default="")
+    bank = serializers.CharField(default="", write_only=True, required=False)
+    payment_system = serializers.CharField(default="", write_only=True, required=False)
+    bank_name = serializers.CharField(source='bank.name', read_only=True)
+    payment_system_name = serializers.CharField(source='payment_system.name', read_only=True)
 
     class Meta:
         model = CreditCard
         fields = [
             'id', 'owner', 'number',
-            'expiration_date', 'cvv', 'bank', 'payment_system'
+            'expiration_date', 'cvv', 'bank',
+            'payment_system', 'currency', 'balance',
+            'bank_name', 'payment_system_name'
         ]
 
     def validate_bank(self, bank):
