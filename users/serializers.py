@@ -1,5 +1,4 @@
 import datetime
-from functools import cached_property
 
 from django.contrib.auth.models import update_last_login
 from django.db.transaction import atomic

@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -18,7 +20,10 @@ class CreditCardSerializer(serializers.ModelSerializer):
             'id', 'owner', 'number',
             'expiration_date', 'cvv', 'bank',
             'payment_system', 'currency', 'balance',
-            'bank_name', 'payment_system_name'
+            'bank_name', 'payment_system_name', 'is_expired'
+        ]
+        read_only_fields = [
+            'is_expired'
         ]
 
     def validate_bank(self, bank):
@@ -38,3 +43,32 @@ class CreditCardSerializer(serializers.ModelSerializer):
             return PaymentSystem.objects.get(number=payment_number)
         else:
             raise ValidationError("Payment system not found")
+
+
+class CreditCardCreateSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    expiration_date = serializers.DateField(allow_null=True, required=False)
+    bank_name = serializers.CharField(source='bank.name', read_only=True)
+    payment_system_name = serializers.CharField(source='payment_system.name', read_only=True)
+    bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all(), write_only=True)
+    payment_system = serializers.PrimaryKeyRelatedField(queryset=PaymentSystem.objects.all(), write_only=True)
+    balance = serializers.FloatField(default=0, required=False)
+
+    class Meta:
+        model = CreditCard
+        fields = [
+            'id', 'owner', 'number',
+            'expiration_date', 'cvv', 'bank', 'bank_name',
+            'payment_system', 'payment_system_name', 'currency', 'balance'
+        ]
+        read_only_fields = [
+            'number', 'cvv', 'is_expired'
+        ]
+
+    def create(self, validated_data):
+        validated_data['number'] = CreditCard.card_number_generator(
+            validated_data['bank'].number, validated_data['payment_system'].number
+        )
+        validated_data['cvv'] = CreditCard.cvv_generator()
+        validated_data['expiration_date'] = datetime.datetime.utcnow().date() + datetime.timedelta(days=1825)
+        return CreditCard.objects.create(**validated_data)

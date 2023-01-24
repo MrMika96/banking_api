@@ -1,3 +1,7 @@
+import random
+import string
+from datetime import datetime
+
 from django.db import models
 
 from banks.models import Bank, PaymentSystem
@@ -22,3 +26,21 @@ class CreditCard(models.Model):
 
     class Meta:
         db_table = "credit_cards"
+
+    @classmethod
+    def cvv_generator(cls):
+        return ''.join(random.choices(string.digits, k=3))
+
+    @classmethod
+    def card_number_generator(cls, bank_number, payment_system_number):
+        existing_numbers = CreditCard.objects.values_list('number', flat=True)
+        number = payment_system_number + bank_number
+        while True:
+            number = number + ''.join(random.choices(string.digits, k=9))
+            if number not in existing_numbers:
+                break
+        return number
+
+    @property
+    def is_expired(self):
+        return True if self.expiration_date < datetime.utcnow().date() else False
