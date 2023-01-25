@@ -1,0 +1,96 @@
+[
+  {
+    "model": "banks.bank",
+    "pk": 1,
+    "fields": {
+      "name": "BaBank",
+      "type": "central bank",
+      "number": "001122"
+    }
+  },
+  {
+    "model": "banks.bank",
+    "pk": 2,
+    "fields": {
+      "name": "Pickles",
+      "type": "commercial bank",
+      "number": "112233"
+    }
+  },
+  {
+    "model": "banks.bank",
+    "pk": 3,
+    "fields": {
+      "name": "Invest Nevest",
+      "type": "investment bank",
+      "number": "223344"
+    }
+  },
+  {
+    "model": "banks.bank",
+    "pk": 4,
+    "fields": {
+      "name": "Bonfire",
+      "type": "savings bank",
+      "number": "334455"
+    }
+  },
+  {
+    "model": "banks.bank",
+    "pk": 5,
+    "fields": {
+      "name": "HankHill Bank",
+      "type": "mortgage bank",
+      "number": "445566"
+    }
+  },
+  {
+    "model": "banks.bank",
+    "pk": 6,
+    "fields": {
+      "name": "OnlyForSpiders Bank",
+      "type": "special bank",
+      "number": "556677"
+    }
+  },
+  {
+    "model": "banks.paymentsystem",
+    "pk": 1,
+    "fields": {
+      "name": "GrandMaster Card",
+      "number": "1"
+    }
+  },
+  {
+    "model": "banks.paymentsystem",
+    "pk": 2,
+    "fields": {
+      "name": "Kisa",
+      "number": "2"
+    }
+  },
+  {
+    "model": "banks.paymentsystem",
+    "pk": 3,
+    "fields": {
+      "name": "UnitedPay",
+      "number": "3"
+    }
+  },
+  {
+    "model": "banks.paymentsystem",
+    "pk": 4,
+    "fields": {
+      "name": "PIR",
+      "number": "4"
+    }
+  },
+  {
+    "model": "banks.paymentsystem",
+    "pk": 5,
+    "fields": {
+      "name": "Haha Funny",
+      "number": "5"
+    }
+  }
+]

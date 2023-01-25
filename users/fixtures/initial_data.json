@@ -1,0 +1,23 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$ZoZCiq63zqfaLdoB6ffEKt$Nfz0aZGIJLqam4L0Y4NKa3IWWaJtNMHrMB2Yt69rToM=",
+      "last_login": null,
+      "email": "test@test1.com",
+      "created_at": "2023-01-19T09:50:28.610Z"
+    }
+  },
+  {
+    "model": "users.profile",
+    "pk": 1,
+    "fields": {
+      "last_name": "string",
+      "first_name": "string",
+      "middle_name": "string",
+      "phone": "+79119119911",
+      "birth_date": "2023-01-19"
+    }
+  }
+]

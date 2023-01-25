@@ -1,0 +1,128 @@
+[
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 1,
+    "fields": {
+      "owner": 1,
+      "number": "1334455888777666",
+      "expiration_date": "2023-01-20",
+      "cvv": 321,
+      "bank": 4,
+      "payment_system": 1,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 2,
+    "fields": {
+      "owner": 1,
+      "number": "2334455888777666",
+      "expiration_date": "2023-01-20",
+      "cvv": 323,
+      "bank": 4,
+      "payment_system": 2,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 3,
+    "fields": {
+      "owner": 1,
+      "number": "5112233888777666",
+      "expiration_date": "2023-01-20",
+      "cvv": 323,
+      "bank": 2,
+      "payment_system": 5,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 4,
+    "fields": {
+      "owner": 1,
+      "number": "3223344961896517",
+      "expiration_date": "2023-01-24",
+      "cvv": 523,
+      "bank": 3,
+      "payment_system": 3,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 5,
+    "fields": {
+      "owner": 1,
+      "number": "3223344510385074",
+      "expiration_date": "2023-01-24",
+      "cvv": 736,
+      "bank": 3,
+      "payment_system": 3,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 6,
+    "fields": {
+      "owner": 1,
+      "number": "3223344726258845",
+      "expiration_date": "2023-01-24",
+      "cvv": 270,
+      "bank": 3,
+      "payment_system": 3,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 7,
+    "fields": {
+      "owner": 1,
+      "number": "4223344146771244",
+      "expiration_date": "2023-01-24",
+      "cvv": 350,
+      "bank": 3,
+      "payment_system": 4,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 8,
+    "fields": {
+      "owner": 1,
+      "number": "4223344562427752",
+      "expiration_date": "2028-01-23",
+      "cvv": 986,
+      "bank": 3,
+      "payment_system": 4,
+      "currency": "USD",
+      "balance": 0
+    }
+  },
+  {
+    "model": "credit_cards.creditcard",
+    "pk": 9,
+    "fields": {
+      "owner": 1,
+      "number": "4223344182841696",
+      "expiration_date": "2028-01-23",
+      "cvv": 640,
+      "bank": 3,
+      "payment_system": 4,
+      "currency": "USD",
+      "balance": 0
+    }
+  }
+]
