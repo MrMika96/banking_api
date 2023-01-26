@@ -33,21 +33,43 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+SHARED_APPS = [
+    'django_tenants',
     'rest_framework',
     'drf_spectacular',
     'django_filters',
     'users',
     'images',
     'banks',
-    'credit_cards'
+    'credit_cards',
+    'tenants',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 ]
+
+TENANT_APPS = [
+    'django_tenants',
+    'rest_framework',
+    'drf_spectacular',
+    'django_filters',
+    'users',
+    'images',
+    'banks',
+    'credit_cards',
+    'tenants',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_tenants.middleware.main.TenantMainMiddleware'
 ]
 
 ROOT_URLCONF = 'practice_2.urls'
@@ -86,7 +109,7 @@ WSGI_APPLICATION = 'practice_2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django_tenants.postgresql_backend',
         'NAME': config('DB_NAME', default=''),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default=''),
@@ -94,6 +117,10 @@ DATABASES = {
         'PORT': config('DB_PORT', default=5432, cast=int),
     }
 }
+
+DATABASE_ROUTERS = (
+    'django_tenants.routers.TenantSyncRouter',
+)
 
 
 # Password validation
@@ -203,3 +230,7 @@ PAGE_SIZE_QUERY_PARAM = 'per_page'
 PAGE_QUERY_PARAM = 'page'
 MAX_PAGE_SIZE = 30
 PAGE_SIZE = 10
+
+TENANT_MODEL = "tenants.Tenant"
+
+TENANT_DOMAIN_MODEL = "tenants.Domain"

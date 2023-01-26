@@ -54,6 +54,17 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
+name = "django-tenants"
+version = "3.4.7"
+description = "Tenant support for Django using PostgreSQL schemas."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=2.1,<=4.2"
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 description = "Web APIs for Django, made easy."
@@ -255,7 +266,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "491d2b5cf553bd54adb6c006391f63b0c6bfcf4b47395aaf3a66922c12a979ba"
+content-hash = "ef86cd30a97085dc3ba39861655000a45441cc863bb677185de98317a8709fbe"
 
 [metadata.files]
 asgiref = [
@@ -273,6 +284,9 @@ django = [
 django-filter = [
     {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
     {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
+]
+django-tenants = [
+    {file = "django-tenants-3.4.7.tar.gz", hash = "sha256:9e2e28ee9e813c59600dc49ec4370c7e2fb0da26fb06ba1d0a1849ebcba01cd6"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.14.0-py3-none-any.whl", hash = "sha256:eb63f58c9f218e1a7d064d17a70751f528ed4e1d35547fdade9aaf4cd103fd08"},
