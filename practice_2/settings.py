@@ -61,6 +61,7 @@ TENANT_APPS = [
     'banks',
     'credit_cards',
     'tenants',
+    'management',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
