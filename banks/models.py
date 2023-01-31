@@ -10,7 +10,7 @@ class Bank(models.Model):
         ('mortgage bank', 'mortgage bank'),
         ('special bank', 'special bank')
     ]
-    name = models.CharField(max_length=128, blank=False, null=False)
+    name = models.CharField(max_length=128, blank=False, null=False, unique=True)
     type = models.CharField(max_length=16, choices=BANK_TYPE, blank=False, null=False)
     number = models.CharField(max_length=6, blank=False, null=False)
 
@@ -19,8 +19,8 @@ class Bank(models.Model):
 
 
 class PaymentSystem(models.Model):
-    name = models.CharField(max_length=128, blank=False, null=False)
-    number = models.CharField(max_length=2, blank=False, null=False)
+    name = models.CharField(max_length=128, blank=False, null=False, unique=True)
+    number = models.CharField(max_length=2, blank=False, null=False, unique=True)
 
     class Meta:
         db_table = "payment_systems"

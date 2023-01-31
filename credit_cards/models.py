@@ -26,6 +26,7 @@ class CreditCard(models.Model):
 
     class Meta:
         db_table = "credit_cards"
+        unique_together = ['owner', 'number']
 
     @classmethod
     def cvv_generator(cls):
