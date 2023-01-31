@@ -14,7 +14,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.method == "GET":
             self.queryset = self.queryset.filter(owner=self.request.user)
-        return self.queryset.select_related('bank', 'owner')
+        return self.queryset.prefetch_related('bank', 'owner')
 
 
 class CreateCreditCardViewSet(CreateAPIView):
