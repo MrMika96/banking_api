@@ -1,4 +1,4 @@
-from django.db.models import Count, Case, When, CharField, Value
+from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import viewsets
@@ -9,8 +9,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from users.models import User, Contact
 from users.serializers import (
     UserTokenObtainPairSerializer, UserRegisterSerializer,
-    UserSerializer, UserCredentialsUpdateSerializer, ContactSerializerShort, ContactSerializer,
-    ContactBulkCreateSerializer
+    UserSerializer, UserCredentialsUpdateSerializer, ContactSerializerShort,
+    ContactSerializer, ContactBulkCreateSerializer, UserMeSerializer
 )
 from utils.paginations import DynamicPageNumberPagination
 
@@ -47,25 +47,16 @@ class UserRegisterView(CreateAPIView):
 )
 class UserMeViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserMeSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.queryset.filter(
             id=self.request.user.id
-        ).select_related(
-            "profile"
         ).prefetch_related(
-            "application_set"
+            "profile"
         ).annotate(
-            vps_count=Count("vps"),
-            workload=Case(
-                When(vps_count__range=[1, 3], then=Value("EASY", output_field=CharField())),
-                When(vps_count__range=[3, 8], then=Value("MEDIUM", output_field=CharField())),
-                When(vps_count__gte=9, then=Value("HARD", output_field=CharField())),
-                default=Value("VERY_EASY", output_field=CharField())
-            ),
-            applications_deployed=Count("application", distinct=True)
+            registered_cards_count=Count("credit_cards")
         ).first()
 
 
@@ -82,16 +73,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.select_related("profile").prefetch_related("application_set").annotate(
-            vps_count=Count("vps"),
-            workload=Case(
-                When(vps_count__range=[1, 3], then=Value("EASY", output_field=CharField())),
-                When(vps_count__range=[3, 8], then=Value("MEDIUM", output_field=CharField())),
-                When(vps_count__gte=9, then=Value("HARD", output_field=CharField())),
-                default=Value("VERY_EASY", output_field=CharField())
-            ),
-            applications_deployed=Count("application", distinct=True)
-        )
+        return self.queryset.prefetch_related("profile")
 
 
 @extend_schema_view(
@@ -106,6 +88,7 @@ class UserCredentialsUpdateView(UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
 
 @extend_schema_view(
     list=extend_schema(description="Route for obtaining a list of opponents of a user authorized in the system",
@@ -130,7 +113,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         'contact__profile__middle_name', 'contact__profile__phone', 'contact__email']
 
     def get_queryset(self):
-        return self.queryset.filter(user_id=self.request.user.id).select_related(
+        return self.queryset.filter(user_id=self.request.user.id).prefetch_related(
             'user', 'user__profile', 'user__profile__image',
             'contact', 'contact__profile', 'contact__profile__image'
         ).order_by(

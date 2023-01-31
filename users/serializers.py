@@ -78,27 +78,27 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             profile=validated_data["profile"])
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserMeSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(help_text="Contains user's personal data")
-    workload = serializers.CharField(
-        default=None,
-        read_only=True,
-        help_text="Displays users workload (how many servers he/she maintaining)"
-    )
-    applications_deployed = serializers.IntegerField(
-        default=0,
-        read_only=True,
-        help_text="Shows how many applications was deployed to the various servers by this user"
-    )
+    registered_cards_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
-        fields = ["id", "email", "profile", "workload", "applications_deployed"]
+        fields = ["id", "email", "profile", "registered_cards_count"]
         read_only_fields = ["id", "email"]
 
     def update(self, instance, validated_data):
         super().update(instance.profile, validated_data.pop("profile"))
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(help_text="Contains user's personal data")
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "profile"]
+        read_only_fields = ["id", "email"]
 
 
 class UserCredentialsUpdateSerializer(serializers.ModelSerializer):
@@ -156,6 +156,7 @@ class MaintainerSerializer(serializers.ModelSerializer):
         fields = ["id", "email", "phone",
                   "first_name", "last_name"]
 
+
 class ContactProfileSerializer(serializers.ModelSerializer):
     contact_id = serializers.IntegerField(source='user_id', read_only=True)
     image = ImageSerializer(allow_null=True, read_only=True)
@@ -190,11 +191,11 @@ class ContactSerializer(serializers.ModelSerializer):
     def validate_contact_id(self, contact_id):
         user = self.context['request'].user
         if user.id == contact_id.id:
-            raise ValidationError('Нельзя добавить собственный аккаунт в контакты')
+            raise ValidationError('You can`t add your own account to contacts')
         if self.context['request'].method == "POST" and self.Meta.model.objects.filter(
                 user=user,
                 contact=contact_id).exists():
-            raise ValidationError('Такой контакт уже существует')
+            raise ValidationError('This contact already exists')
         return contact_id
 
 
@@ -211,7 +212,7 @@ class ContactBulkCreateSerializer(serializers.Serializer):
     phone_numbers = serializers.ListField(
         child=serializers.CharField(), write_only=True,
         required=True, allow_empty=False,
-        help_text="Телефонные номер пользователей, которых необходимо добавить в список контактов")
+        help_text="Phone numbers of users to be added to the contact list")
 
     def validate_phone_numbers(self, phone_numbers):
         normalized_phones = []
@@ -220,7 +221,7 @@ class ContactBulkCreateSerializer(serializers.Serializer):
         if self.context['request'].user.profile.phone in normalized_phones:
             normalized_phones.remove(self.context['request'].user.profile.phone)
         if not User.objects.filter(profile__phone__in=normalized_phones).exists():
-            raise NotFound("Телефонный номер не найден")
+            raise NotFound("Phone number not found")
         return normalized_phones
 
     def to_representation(self, instance):
