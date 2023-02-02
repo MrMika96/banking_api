@@ -18,6 +18,7 @@ class CreditCard(models.Model):
     owner = models.ForeignKey(User, related_name="credit_cards", on_delete=models.CASCADE)
     number = models.CharField(max_length=19, blank=False, null=False)
     expiration_date = models.DateField(blank=False, null=False)
+    is_expired = models.BooleanField(default=False)
     cvv = models.IntegerField()
     bank = models.ForeignKey(Bank, related_name="cards", on_delete=models.CASCADE)
     payment_system = models.ForeignKey(PaymentSystem, related_name="cards", on_delete=models.CASCADE)
@@ -41,7 +42,3 @@ class CreditCard(models.Model):
             if number not in existing_numbers:
                 break
         return number
-
-    @property
-    def is_expired(self):
-        return True if self.expiration_date < datetime.utcnow().date() else False
