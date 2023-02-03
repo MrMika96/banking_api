@@ -1,8 +1,10 @@
 import random
 import string
-from datetime import datetime
 
 from django.db import models
+from forex_python.converter import CurrencyRates, RatesNotAvailableError
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 from banks.models import Bank, PaymentSystem
 from users.models import User
@@ -13,7 +15,8 @@ class CreditCard(models.Model):
         ('USD', 'USD'),
         ('EUR', 'EUR'),
         ('JPY', 'JPY'),
-        ('RUB', 'RUB')
+        ('RUB', 'RUB'),
+        ('CNY', 'CNY')
     ]
     owner = models.ForeignKey(User, related_name="credit_cards", on_delete=models.CASCADE)
     number = models.CharField(max_length=19, blank=False, null=False)
@@ -42,3 +45,15 @@ class CreditCard(models.Model):
             if number not in existing_numbers:
                 break
         return number
+
+    @classmethod
+    def change_balance_by_currency(cls, old_currency: str, new_currency: str, balance: float):
+        if balance == 0:
+            return balance
+        else:
+            rates = CurrencyRates()
+            try:
+                return rates.convert(old_currency, new_currency, balance)
+            except RatesNotAvailableError:
+                raise ValidationError(detail='Currency not found or not available right now',
+                                      code=status.HTTP_400_BAD_REQUEST)

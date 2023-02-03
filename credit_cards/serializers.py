@@ -72,3 +72,27 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
         validated_data['cvv'] = CreditCard.cvv_generator()
         validated_data['expiration_date'] = datetime.datetime.utcnow().date() + datetime.timedelta(days=1825)
         return CreditCard.objects.create(**validated_data)
+
+
+class ChangeCardCurrencySerializer(serializers.ModelSerializer):
+    currency = serializers.CharField(required=False, allow_null=True, default=None)
+
+    class Meta:
+        model = CreditCard
+        fields = [
+           'currency'
+        ]
+
+    def update(self, instance, validated_data):
+        balance = CreditCard.change_balance_by_currency(
+            instance.currency,
+            validated_data['currency'],
+            instance.balance
+        )
+        instance.currency = validated_data['currency']
+        instance.balance = balance
+        instance.save(update_fields=['currency', 'balance'])
+        return instance
+
+
+

@@ -18,6 +18,7 @@ Pillow = "^9.4.0"
 django-tenants = "^3.4.7"
 celery = "^5.2.7"
 redis = "^4.4.2"
+forex-python = "^1.8"
 
 [tool.poetry.dev-dependencies]
 
