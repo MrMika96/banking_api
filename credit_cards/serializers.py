@@ -1,5 +1,7 @@
 import datetime
 
+from django.db.transaction import atomic
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -95,4 +97,62 @@ class ChangeCardCurrencySerializer(serializers.ModelSerializer):
         return instance
 
 
+class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditCard
+        fields = ['balance']
 
+    def validate_balance(self, balance):
+        if balance < 0:
+            raise ValidationError("Balance can`t be negative number")
+        return balance
+
+    def update(self, instance, validated_data):
+        instance.balance = instance.balance + validated_data['balance']
+        instance.save(update_fields=['balance'])
+        return instance
+
+
+class TransferFromCardToCardSerializer(serializers.Serializer):
+    from_card_number = serializers.CharField(required=True, write_only=True)
+    to_card_number = serializers.CharField(required=True, write_only=True)
+    sum_of_money = serializers.FloatField(required=True, write_only=True)
+
+    def validate_from_card_number(self, from_card_number):
+        if not CreditCard.objects.filter(
+                number=from_card_number, owner=self.context['request'].user
+        ).exists():
+            raise ValidationError(detail="Card with this number is not found")
+        return from_card_number
+
+    def validate_to_card_number(self, to_card_number):
+        if not CreditCard.objects.filter(number=to_card_number).exists():
+            raise ValidationError(detail="Card with this number is not found")
+        return to_card_number
+
+    def validate_sum_of_money(self, sum_of_money):
+        if sum_of_money < 0:
+            raise ValidationError("Sum of money can`t be negative number")
+        if sum_of_money > CreditCard.objects.get(
+                number=self.initial_data['from_card_number'],
+                owner=self.context['request'].user
+        ).balance:
+            raise ValidationError("Insufficient funds")
+        return sum_of_money
+
+    def to_representation(self, instance):
+        return {"status": "Complete!"}
+
+    @atomic
+    def create(self, validated_data):
+        to_card = get_object_or_404(CreditCard, number=validated_data['to_card_number'])
+        from_card = get_object_or_404(CreditCard, number=validated_data['from_card_number'])
+        from_card.balance = from_card.balance - validated_data['sum_of_money']
+        from_card.save(update_fields=['balance'])
+        to_card.balance = from_card.balance + CreditCard.change_balance_by_currency(
+            from_card.currency,
+            to_card.currency,
+            validated_data['sum_of_money']
+        )
+        to_card.save(update_fields=['balance'])
+        return to_card
