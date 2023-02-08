@@ -25,6 +25,10 @@ app.conf.beat_schedule = {
         'task': 'credit_cards.tasks.change_expiration_status_for_card',
         'schedule': crontab(hour=0, minute=0),
     },
+    'update_currency_rates': {
+        'task': 'banks.tasks.update_currency_rates',
+        'schedule': crontab(hour=15, minute=0)
+    }
 }
 
 

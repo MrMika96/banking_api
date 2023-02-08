@@ -92,5 +92,70 @@
       "name": "Haha Funny",
       "number": "5"
     }
+  },
+  {
+    "model": "banks.currency",
+    "pk": 1,
+    "fields": {
+      "name": "USD",
+      "rates": {
+        "CNY": 6.79,
+        "EUR": 0.93,
+        "JPY": 132.16,
+        "RUB": 70.77
+      }
+    }
+  },
+  {
+    "model": "banks.currency",
+    "pk": 2,
+    "fields": {
+      "name": "RUB",
+      "rates": {
+        "CNY": 0.096,
+        "EUR": 0.013,
+        "JPY": 1.86,
+        "USD": 0.014
+      }
+    }
+  },
+  {
+    "model": "banks.currency",
+    "pk": 3,
+    "fields": {
+      "name": "CNY",
+      "rates": {
+        "EUR": 0.14,
+        "JPY": 19.48,
+        "RUB": 10.5,
+        "USD": 0.15
+      }
+    }
+  },
+  {
+    "model": "banks.currency",
+    "pk": 4,
+    "fields": {
+      "name": "JPY",
+      "rates": {
+        "CNY": 0.051,
+        "EUR": 0.0071,
+        "RUB": 0.54,
+        "USD": 0.0076
+      }
+    }
+  },
+  {
+    "model": "banks.currency",
+    "pk": 5,
+    "fields": {
+      "name": "EUR",
+      "rates": {
+        "CNY": 7.28,
+        "JPY": 141.79,
+        "RUB": 76.17,
+        "USD": 1.07
+      }
+    }
   }
 ]

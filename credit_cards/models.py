@@ -6,7 +6,7 @@ from forex_python.converter import CurrencyRates, RatesNotAvailableError
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from banks.models import Bank, PaymentSystem
+from banks.models import Bank, PaymentSystem, Currency
 from users.models import User
 
 
@@ -55,5 +55,4 @@ class CreditCard(models.Model):
             try:
                 return rates.convert(old_currency, new_currency, balance)
             except RatesNotAvailableError:
-                raise ValidationError(detail='Currency not found or not available right now',
-                                      code=status.HTTP_400_BAD_REQUEST)
+                return Currency.convert(old_currency, new_currency, balance)

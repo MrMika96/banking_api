@@ -149,10 +149,13 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
         from_card = get_object_or_404(CreditCard, number=validated_data['from_card_number'])
         from_card.balance = from_card.balance - validated_data['sum_of_money']
         from_card.save(update_fields=['balance'])
-        to_card.balance = from_card.balance + CreditCard.change_balance_by_currency(
-            from_card.currency,
-            to_card.currency,
-            validated_data['sum_of_money']
-        )
+        if to_card.currency != from_card.currency:
+            to_card.balance = to_card.balance + CreditCard.change_balance_by_currency(
+                from_card.currency,
+                to_card.currency,
+                validated_data['sum_of_money']
+            )
+        else:
+            to_card.balance = to_card.balance + validated_data['sum_of_money']
         to_card.save(update_fields=['balance'])
         return to_card
