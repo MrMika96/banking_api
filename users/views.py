@@ -53,7 +53,7 @@ class UserMeViewSet(viewsets.ModelViewSet):
     def get_object(self):
         return self.queryset.filter(
             id=self.request.user.id
-        ).prefetch_related(
+        ).select_related(
             "profile"
         ).annotate(
             registered_cards_count=Count("credit_cards")
@@ -73,7 +73,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.prefetch_related("profile")
+        return self.queryset.select_related("profile")
 
 
 @extend_schema_view(
@@ -113,7 +113,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         'contact__profile__middle_name', 'contact__profile__phone', 'contact__email']
 
     def get_queryset(self):
-        return self.queryset.filter(user_id=self.request.user.id).prefetch_related(
+        return self.queryset.filter(user_id=self.request.user.id).select_related(
             'user', 'user__profile', 'user__profile__image',
             'contact', 'contact__profile', 'contact__profile__image'
         ).order_by(
