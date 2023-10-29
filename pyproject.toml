@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "practice_2"
+name = "banking_api"
 version = "0.1.0"
 description = "This is for practice"
 authors = ["MrMika96 <mikamc1996@gmail.com>"]

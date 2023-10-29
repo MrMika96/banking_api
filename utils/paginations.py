@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
-from practice_2.settings import MAX_PAGE_SIZE, PAGE_SIZE_QUERY_PARAM, PAGE_QUERY_PARAM
+from banking_api.settings import MAX_PAGE_SIZE, PAGE_SIZE_QUERY_PARAM, PAGE_QUERY_PARAM
 
 
 class DynamicPageNumberPagination(PageNumberPagination):

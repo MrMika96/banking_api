@@ -3,7 +3,7 @@ import logging
 from django.apps import apps
 from forex_python.converter import CurrencyRates
 
-from practice_2.celery import app
+from banking_api.celery import app
 
 
 @app.task(default_retry_delay=600, max_retrues=7)

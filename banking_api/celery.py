@@ -7,9 +7,9 @@ from celery import Celery
 from celery.schedules import crontab
 from django.apps import apps
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'practice_2.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'banking_api.settings')
 
-app = Celery('practice_2', broker='redis://localhost')
+app = Celery('banking_api', broker='redis://localhost')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.apps import apps
 
-from practice_2.celery import app
+from banking_api.celery import app
 
 
 @app.task

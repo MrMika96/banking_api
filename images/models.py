@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models, connection
 
-from practice_2.settings import LOCAL
+from banking_api.settings import LOCAL
 
 
 def get_upload_to(instance, filename):
