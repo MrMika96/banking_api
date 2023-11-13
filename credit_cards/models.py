@@ -3,8 +3,6 @@ import string
 
 from django.db import models
 from forex_python.converter import CurrencyRates, RatesNotAvailableError
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
 
 from banks.models import Bank, PaymentSystem, Currency
 from users.models import User
