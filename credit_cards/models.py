@@ -9,6 +9,9 @@ from users.models import User
 
 
 class CreditCard(models.Model):
+    """Такие важные моменты как номер карты пользователя и его cvv
+    хранятся без хеширования, прям как в свое время это делали Sony
+    с данными кредитных карт своих пользователей"""
     CURRENCY_CHOICES = [
         ('USD', 'USD'),
         ('EUR', 'EUR'),
