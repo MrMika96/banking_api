@@ -3,8 +3,11 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from credit_cards.models import CreditCard
-from credit_cards.serializers import CreditCardSerializer, CreditCardCreateSerializer, ChangeCardCurrencySerializer, \
-    CardBalanceReplenishmentSerializer, TransferFromCardToCardSerializer
+from credit_cards.serializers import (
+    CreditCardSerializer, CreditCardCreateSerializer,
+    ChangeCardCurrencySerializer, CardBalanceReplenishmentSerializer,
+    TransferFromCardToCardSerializer
+)
 
 
 class CreditCardViewSet(viewsets.ModelViewSet):

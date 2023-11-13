@@ -14,6 +14,7 @@ class BanksViewSet(viewsets.ModelViewSet):
     pagination_class = None
     serializer_class = BanksSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
         if self.kwargs.get('pk') and self.request.method == 'GET':

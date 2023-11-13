@@ -26,7 +26,7 @@ class CreditCard(models.Model):
     bank = models.ForeignKey(Bank, related_name="cards", on_delete=models.CASCADE)
     payment_system = models.ForeignKey(PaymentSystem, related_name="cards", on_delete=models.CASCADE)
     currency = models.CharField(max_length=16, choices=CURRENCY_CHOICES, null=True, default=None)
-    balance = models.FloatField(default=0, null=False, blank=False)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     class Meta:
         db_table = "credit_cards"

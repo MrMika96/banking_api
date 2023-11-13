@@ -54,7 +54,7 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
     payment_system_name = serializers.CharField(source='payment_system.name', read_only=True)
     bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all(), write_only=True)
     payment_system = serializers.PrimaryKeyRelatedField(queryset=PaymentSystem.objects.all(), write_only=True)
-    balance = serializers.FloatField(default=0, required=False)
+    balance = serializers.DecimalField(max_digits=10, decimal_places=2, default=0, required=False)
 
     class Meta:
         model = CreditCard
@@ -116,7 +116,10 @@ class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
 class TransferFromCardToCardSerializer(serializers.Serializer):
     from_card_number = serializers.CharField(required=True, write_only=True)
     to_card_number = serializers.CharField(required=True, write_only=True)
-    sum_of_money = serializers.FloatField(required=True, write_only=True)
+    sum_of_money = serializers.DecimalField(
+        max_digits=10, decimal_places=2,
+        required=True, write_only=True
+    )
 
     def validate_from_card_number(self, from_card_number):
         if not CreditCard.objects.filter(
