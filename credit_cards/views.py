@@ -14,6 +14,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
     queryset = CreditCard.objects.all()
     serializer_class = CreditCardSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
         if self.request.method == "GET":

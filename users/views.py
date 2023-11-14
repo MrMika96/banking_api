@@ -2,8 +2,9 @@ from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import viewsets
-from rest_framework.generics import CreateAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import User, Contact
@@ -24,17 +25,6 @@ from utils.paginations import DynamicPageNumberPagination
 )
 class UserAuthView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
-
-
-@extend_schema_view(
-    post=extend_schema(description="User system registration, takes users email, "
-                                   "password and profile data and saves it in our system",
-                       summary="User registration in the system"
-                       )
-)
-class UserRegisterView(CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserRegisterSerializer
 
 
 @extend_schema_view(
@@ -71,9 +61,32 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post']
 
     def get_queryset(self):
         return self.queryset.select_related("profile")
+
+    def get_permissions(self):
+        if self.action == 'user_register':
+            return [AllowAny]
+        return self.permission_classes
+
+    def get_serializer_class(self):
+        if self.action == 'user_register':
+            return UserRegisterSerializer
+        return self.serializer_class
+
+    @extend_schema(
+        request=UserRegisterSerializer,
+        responses=UserRegisterSerializer,
+        description="User system registration, takes users email, "
+                    "password and profile data and saves it in our system",
+        summary="User registration in the system"
+    )
+    @action(methods=['post'], url_name='register', url_path='register', detail=False)
+    def user_register(self, request, *args, **kwargs):
+        self.create(request, *args, **kwargs)
+
 
 
 @extend_schema_view(
@@ -111,8 +124,11 @@ class ContactViewSet(viewsets.ModelViewSet):
     search_fields = [
         'contact__profile__last_name', 'contact__profile__first_name',
         'contact__profile__middle_name', 'contact__profile__phone', 'contact__email']
+    http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
+        if self.action == 'bulk_create_contacts':
+            return self.queryset
         return self.queryset.filter(user_id=self.request.user.id).select_related(
             'user', 'user__profile', 'user__profile__image',
             'contact', 'contact__profile', 'contact__profile__image'
@@ -123,14 +139,22 @@ class ContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if not self.kwargs.get('pk') and self.request.method == 'GET':
             return ContactSerializerShort
+        if self.action == 'bulk_create_contacts':
+            return ContactBulkCreateSerializer
         return self.serializer_class
 
-
-@extend_schema_view(
-    post=extend_schema(description="Route for uploading a bunch of users (by their phone number) "
-                                   "to the authorized user's contact list",
-                       summary="Download a pack of contacts")
-)
-class ContactBulkCreateView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ContactBulkCreateSerializer
+    @extend_schema(
+        responses=ContactBulkCreateSerializer,
+        request=ContactBulkCreateSerializer,
+        description="Route for uploading a bunch of users (by their phone number) "
+                    "to the authorized user's contact list",
+        summary="Download a pack of contacts"
+    )
+    @action(
+        url_path='bulk_create_contacts',
+        url_name='bulk_create_contacts',
+        methods=['post'],
+        detail=False
+    )
+    def bulk_create_contacts(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
