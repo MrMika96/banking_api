@@ -34,3 +34,4 @@ class PaymentSystemViewSet(viewsets.ModelViewSet):
     pagination_class = None
     serializer_class = PaymentSystemSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'put']
