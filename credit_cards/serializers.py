@@ -1,4 +1,5 @@
 import datetime
+from _decimal import Decimal
 
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
@@ -98,6 +99,8 @@ class ChangeCardCurrencySerializer(serializers.ModelSerializer):
 
 
 class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
+    balance = serializers.DecimalField(max_digits=10, decimal_places=2, default=0, min_value=Decimal(0))
+
     class Meta:
         model = CreditCard
         fields = ['balance']
