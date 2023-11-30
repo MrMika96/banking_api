@@ -17,16 +17,19 @@ class BanksViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
-        if self.kwargs.get('pk') and self.request.method == 'GET':
-            self.queryset = self.queryset.prefetch_related('cards', 'cards__owner').annotate(
+        qs = super().get_queryset()
+
+        if self.action == 'retrieve':
+            qs = qs.prefetch_related('cards', 'cards__owner').annotate(
                 number_of_clients=Count('cards__owner', distinct=True)
             )
-        return self.queryset
+        return qs
 
     def get_serializer_class(self):
-        if self.kwargs.get('pk') and self.request.method == 'GET':
+        if self.action == 'retrieve':
             return DetailedBankSerializer
-        return self.serializer_class
+
+        return super().get_serializer_class()
 
 
 class PaymentSystemViewSet(viewsets.ModelViewSet):

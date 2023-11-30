@@ -3,6 +3,7 @@ from _decimal import Decimal
 
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -73,7 +74,7 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
             validated_data['bank'].number, validated_data['payment_system'].number
         )
         validated_data['cvv'] = CreditCard.cvv_generator()
-        validated_data['expiration_date'] = datetime.datetime.utcnow().date() + datetime.timedelta(days=1825)
+        validated_data['expiration_date'] = timezone.now().date() + datetime.timedelta(days=1825)
         return CreditCard.objects.create(**validated_data)
 
 

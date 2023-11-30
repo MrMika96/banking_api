@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny
 
 from images.models import Image
 from images.serializers import ImageSerializer
@@ -18,3 +19,4 @@ class ImageViewSet(viewsets.ModelViewSet):
     serializer_class = ImageSerializer
     parser_classes = (MultiPartParser,)
     queryset = Image.objects.all()
+    permission_classes = [AllowAny]

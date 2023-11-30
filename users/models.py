@@ -55,7 +55,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=64, blank=True)
     birth_date = models.DateField(null=True, blank=True)
 
-    user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField('User', related_name="profile", on_delete=models.CASCADE, primary_key=True)
 
     class Meta:
         db_table = "profiles"

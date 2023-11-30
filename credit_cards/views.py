@@ -5,8 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from credit_cards.models import CreditCard
 from credit_cards.serializers import (
-    CreditCardSerializer, CreditCardCreateSerializer,
-    ChangeCardCurrencySerializer, CardBalanceReplenishmentSerializer,
+    CreditCardSerializer,
+    CreditCardCreateSerializer,
+    ChangeCardCurrencySerializer,
+    CardBalanceReplenishmentSerializer,
     TransferFromCardToCardSerializer
 )
 
@@ -18,9 +20,11 @@ class CreditCardViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
+        qs = super().get_queryset()
+
         if self.request.method == "GET":
-            self.queryset = self.queryset.filter(owner=self.request.user)
-        return self.queryset.select_related('bank', 'owner')
+            qs = qs.filter(owner=self.request.user)
+        return qs.select_related('bank', 'owner')
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -31,7 +35,8 @@ class CreditCardViewSet(viewsets.ModelViewSet):
             return ChangeCardCurrencySerializer
         if self.action == 'change_currency':
             return ChangeCardCurrencySerializer
-        return self.serializer_class
+
+        return super().get_serializer_class()
 
     @extend_schema(
         request=CreditCardSerializer,
@@ -61,7 +66,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         methods=['put'], detail=False
     )
     def change_currency(self, request, pk: int, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     @extend_schema(
         request=CardBalanceReplenishmentSerializer,
@@ -73,4 +78,4 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         methods=['put'], detail=False
     )
     def balance_replenishment(self, request, pk: int, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)

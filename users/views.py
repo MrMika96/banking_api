@@ -41,7 +41,9 @@ class UserMeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.queryset.filter(
+        qs = super().get_queryset()
+
+        return qs.filter(
             id=self.request.user.id
         ).select_related(
             "profile"
@@ -64,17 +66,20 @@ class UserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post']
 
     def get_queryset(self):
-        return self.queryset.select_related("profile")
+        qs = super().get_queryset()
+
+        return qs.select_related("profile")
 
     def get_permissions(self):
         if self.action == 'user_register':
             return [AllowAny]
-        return self.permission_classes
+        return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action == 'user_register':
             return UserRegisterSerializer
-        return self.serializer_class
+
+        return super().get_serializer_class()
 
     @extend_schema(
         request=UserRegisterSerializer,
@@ -85,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
     )
     @action(methods=['post'], url_name='register', url_path='register', detail=False)
     def user_register(self, request, *args, **kwargs):
-        self.create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
 
 
@@ -127,9 +132,11 @@ class ContactViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
+        qs = super().get_queryset()
+
         if self.action == 'bulk_create_contacts':
-            return self.queryset
-        return self.queryset.filter(user_id=self.request.user.id).select_related(
+            return qs
+        return qs.filter(user_id=self.request.user.id).select_related(
             'user', 'user__profile', 'user__profile__image',
             'contact', 'contact__profile', 'contact__profile__image'
         ).order_by(
@@ -141,7 +148,8 @@ class ContactViewSet(viewsets.ModelViewSet):
             return ContactSerializerShort
         if self.action == 'bulk_create_contacts':
             return ContactBulkCreateSerializer
-        return self.serializer_class
+
+        return super().get_serializer_class()
 
     @extend_schema(
         responses=ContactBulkCreateSerializer,
@@ -157,4 +165,4 @@ class ContactViewSet(viewsets.ModelViewSet):
         detail=False
     )
     def bulk_create_contacts(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
