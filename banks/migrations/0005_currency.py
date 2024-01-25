@@ -4,21 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('banks', '0004_alter_bank_name_alter_paymentsystem_name_and_more'),
+        ("banks", "0004_alter_bank_name_alter_paymentsystem_name_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Currency',
+            name="Currency",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=4, unique=True)),
-                ('rate', models.FloatField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=4, unique=True)),
+                ("rate", models.FloatField(default=0)),
             ],
             options={
-                'db_table': 'currencies',
+                "db_table": "currencies",
             },
         ),
     ]

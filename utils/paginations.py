@@ -13,6 +13,7 @@ class DynamicPageNumberPagination(PageNumberPagination):
     Adds support for pagination metadata and overrides for
     pagination query parameters.
     """
+
     page_size_query_param = PAGE_SIZE_QUERY_PARAM
     page_query_param = PAGE_QUERY_PARAM
     max_page_size = MAX_PAGE_SIZE
@@ -24,27 +25,29 @@ class DynamicPageNumberPagination(PageNumberPagination):
         Override this if you need other fields in pagination
         """
         return {
-            'total_results': self.page.paginator.count,
-            'total_pages': self.page.paginator.num_pages,
-            'page': self.page.number,
-            'per_page': self.get_page_size(self.request)
+            "total_results": self.page.paginator.count,
+            "total_pages": self.page.paginator.num_pages,
+            "page": self.page.number,
+            "per_page": self.get_page_size(self.request),
         }
 
     def get_paginated_data(self, data: Union[ReturnDict, ReturnList]) -> OrderedDict:
         meta = self.get_page_metadata()
         if isinstance(data, list):
-            data = OrderedDict([
-                ('count', self.page.paginator.count),
-                ('next', self.get_next_link()),
-                ('previous', self.get_previous_link()),
-                ('results', data),
-                ('meta', meta)
-            ])
+            data = OrderedDict(
+                [
+                    ("count", self.page.paginator.count),
+                    ("next", self.get_next_link()),
+                    ("previous", self.get_previous_link()),
+                    ("results", data),
+                    ("meta", meta),
+                ]
+            )
         else:
-            if 'meta' in data:
-                data['meta'].update(meta)
+            if "meta" in data:
+                data["meta"].update(meta)
             else:
-                data['meta'] = meta
+                data["meta"] = meta
         return data
 
     def get_paginated_response(self, data: Union[ReturnDict, ReturnList]) -> Response:

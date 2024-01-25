@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('credit_cards', '0003_alter_creditcard_unique_together'),
+        ("credit_cards", "0003_alter_creditcard_unique_together"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='creditcard',
-            name='is_expired',
+            model_name="creditcard",
+            name="is_expired",
             field=models.BooleanField(default=False),
         ),
     ]

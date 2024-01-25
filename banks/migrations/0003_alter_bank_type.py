@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('banks', '0002_alter_bank_table_alter_paymentsystem_table'),
+        ("banks", "0002_alter_bank_table_alter_paymentsystem_table"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bank',
-            name='type',
-            field=models.CharField(choices=[('central bank', 'central bank'), ('commercial bank', 'commercial bank'), ('investment bank', 'investment bank'), ('savings bank', 'savings bank'), ('mortgage bank', 'mortgage bank'), ('special bank', 'special bank')], max_length=16),
+            model_name="bank",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("central bank", "central bank"),
+                    ("commercial bank", "commercial bank"),
+                    ("investment bank", "investment bank"),
+                    ("savings bank", "savings bank"),
+                    ("mortgage bank", "mortgage bank"),
+                    ("special bank", "special bank"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

@@ -9,4 +9,4 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ['id', 'image', 'url']
+        fields = ["id", "image", "url"]

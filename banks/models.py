@@ -4,12 +4,12 @@ from django.shortcuts import get_object_or_404
 
 class Bank(models.Model):
     BANK_TYPE = [
-        ('central bank', 'central bank'),
-        ('commercial bank', 'commercial bank'),
-        ('investment bank', 'investment bank'),
-        ('savings bank', 'savings bank'),
-        ('mortgage bank', 'mortgage bank'),
-        ('special bank', 'special bank')
+        ("central bank", "central bank"),
+        ("commercial bank", "commercial bank"),
+        ("investment bank", "investment bank"),
+        ("savings bank", "savings bank"),
+        ("mortgage bank", "mortgage bank"),
+        ("special bank", "special bank"),
     ]
     name = models.CharField(max_length=128, blank=False, null=False, unique=True)
     type = models.CharField(max_length=16, choices=BANK_TYPE, blank=False, null=False)

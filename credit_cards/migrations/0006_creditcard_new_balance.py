@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('credit_cards', '0005_alter_creditcard_currency'),
+        ("credit_cards", "0005_alter_creditcard_currency"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='creditcard',
-            name='new_balance',
+            model_name="creditcard",
+            name="new_balance",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
         ),
     ]

@@ -5,7 +5,7 @@ from banking_api.settings import LOCAL
 
 
 def get_upload_to(instance, filename):
-    return f'images/{connection.schema_name}/{filename}'
+    return f"images/{connection.schema_name}/{filename}"
 
 
 class Image(models.Model):
@@ -20,6 +20,8 @@ class Image(models.Model):
     @property
     def url(self):
         if LOCAL:
-            return f'http://{connection.schema_name}.{settings.BASE_HOST}{self.image.url}'
+            return (
+                f"http://{connection.schema_name}.{settings.BASE_HOST}{self.image.url}"
+            )
         else:
-            return f'https://{connection.schema_name}.{settings.BASE_HOST}/api{self.image.url}'
+            return f"https://{connection.schema_name}.{settings.BASE_HOST}/api{self.image.url}"

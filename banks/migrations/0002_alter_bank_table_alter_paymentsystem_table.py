@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('banks', '0001_initial'),
+        ("banks", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelTable(
-            name='bank',
-            table='banks',
+            name="bank",
+            table="banks",
         ),
         migrations.AlterModelTable(
-            name='paymentsystem',
-            table='payment_systems',
+            name="paymentsystem",
+            table="payment_systems",
         ),
     ]

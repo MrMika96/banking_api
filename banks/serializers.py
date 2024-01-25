@@ -6,9 +6,7 @@ from banks.models import Bank, PaymentSystem
 class BanksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bank
-        fields = [
-            'id', 'name', 'type', 'number'
-        ]
+        fields = ["id", "name", "type", "number"]
 
 
 class DetailedBankSerializer(serializers.ModelSerializer):
@@ -16,15 +14,10 @@ class DetailedBankSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bank
-        fields = [
-            'id', 'name', 'type',
-            'number', 'number_of_clients'
-        ]
+        fields = ["id", "name", "type", "number", "number_of_clients"]
 
 
 class PaymentSystemSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentSystem
-        fields = [
-            'id', 'name', 'number'
-        ]
+        fields = ["id", "name", "number"]

@@ -4,8 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from banks.models import Bank, PaymentSystem
 from banks.serializers import (
-    BanksSerializer, PaymentSystemSerializer,
-    DetailedBankSerializer
+    BanksSerializer,
+    PaymentSystemSerializer,
+    DetailedBankSerializer,
 )
 
 
@@ -14,19 +15,19 @@ class BanksViewSet(viewsets.ModelViewSet):
     pagination_class = None
     serializer_class = BanksSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'delete']
+    http_method_names = ["get", "post", "put", "delete"]
 
     def get_queryset(self):
         qs = super().get_queryset()
 
-        if self.action == 'retrieve':
-            qs = qs.prefetch_related('cards', 'cards__owner').annotate(
-                number_of_clients=Count('cards__owner', distinct=True)
+        if self.action == "retrieve":
+            qs = qs.prefetch_related("cards", "cards__owner").annotate(
+                number_of_clients=Count("cards__owner", distinct=True)
             )
         return qs
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return DetailedBankSerializer
 
         return super().get_serializer_class()
@@ -37,4 +38,4 @@ class PaymentSystemViewSet(viewsets.ModelViewSet):
     pagination_class = None
     serializer_class = PaymentSystemSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ['get', 'post', 'put']
+    http_method_names = ["get", "post", "put"]

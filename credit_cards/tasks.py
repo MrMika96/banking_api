@@ -10,7 +10,7 @@ from banking_api.celery import app
 def change_expiration_status_for_card():
     logger = logging.getLogger(__name__)
     logger.info(msg="Execute change_expiration_status_for_card")
-    CreditCard = apps.get_model('credit_cards', 'CreditCard')
+    CreditCard = apps.get_model("credit_cards", "CreditCard")
     expired_cards = CreditCard.objects.filter(
         expiration_date__lte=datetime.utcnow().date()
     )

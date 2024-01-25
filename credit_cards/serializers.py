@@ -15,20 +15,28 @@ class CreditCardSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     bank = serializers.CharField(default="", write_only=True, required=False)
     payment_system = serializers.CharField(default="", write_only=True, required=False)
-    bank_name = serializers.CharField(source='bank.name', read_only=True)
-    payment_system_name = serializers.CharField(source='payment_system.name', read_only=True)
+    bank_name = serializers.CharField(source="bank.name", read_only=True)
+    payment_system_name = serializers.CharField(
+        source="payment_system.name", read_only=True
+    )
 
     class Meta:
         model = CreditCard
         fields = [
-            'id', 'owner', 'number',
-            'expiration_date', 'cvv', 'bank',
-            'payment_system', 'currency', 'balance',
-            'bank_name', 'payment_system_name', 'is_expired'
+            "id",
+            "owner",
+            "number",
+            "expiration_date",
+            "cvv",
+            "bank",
+            "payment_system",
+            "currency",
+            "balance",
+            "bank_name",
+            "payment_system_name",
+            "is_expired",
         ]
-        read_only_fields = [
-            'is_expired'
-        ]
+        read_only_fields = ["is_expired"]
 
     def validate_bank(self, bank):
         split_number = self.initial_data["number"]
@@ -52,29 +60,45 @@ class CreditCardSerializer(serializers.ModelSerializer):
 class CreditCardCreateSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     expiration_date = serializers.DateField(allow_null=True, required=False)
-    bank_name = serializers.CharField(source='bank.name', read_only=True)
-    payment_system_name = serializers.CharField(source='payment_system.name', read_only=True)
-    bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all(), write_only=True)
-    payment_system = serializers.PrimaryKeyRelatedField(queryset=PaymentSystem.objects.all(), write_only=True)
-    balance = serializers.DecimalField(max_digits=10, decimal_places=2, default=0, required=False)
+    bank_name = serializers.CharField(source="bank.name", read_only=True)
+    payment_system_name = serializers.CharField(
+        source="payment_system.name", read_only=True
+    )
+    bank = serializers.PrimaryKeyRelatedField(
+        queryset=Bank.objects.all(), write_only=True
+    )
+    payment_system = serializers.PrimaryKeyRelatedField(
+        queryset=PaymentSystem.objects.all(), write_only=True
+    )
+    balance = serializers.DecimalField(
+        max_digits=10, decimal_places=2, default=0, required=False
+    )
 
     class Meta:
         model = CreditCard
         fields = [
-            'id', 'owner', 'number',
-            'expiration_date', 'cvv', 'bank', 'bank_name',
-            'payment_system', 'payment_system_name', 'currency', 'balance'
+            "id",
+            "owner",
+            "number",
+            "expiration_date",
+            "cvv",
+            "bank",
+            "bank_name",
+            "payment_system",
+            "payment_system_name",
+            "currency",
+            "balance",
         ]
-        read_only_fields = [
-            'number', 'cvv', 'is_expired'
-        ]
+        read_only_fields = ["number", "cvv", "is_expired"]
 
     def create(self, validated_data):
-        validated_data['number'] = CreditCard.card_number_generator(
-            validated_data['bank'].number, validated_data['payment_system'].number
+        validated_data["number"] = CreditCard.card_number_generator(
+            validated_data["bank"].number, validated_data["payment_system"].number
         )
-        validated_data['cvv'] = CreditCard.cvv_generator()
-        validated_data['expiration_date'] = timezone.now().date() + datetime.timedelta(days=1825)
+        validated_data["cvv"] = CreditCard.cvv_generator()
+        validated_data["expiration_date"] = timezone.now().date() + datetime.timedelta(
+            days=1825
+        )
         return CreditCard.objects.create(**validated_data)
 
 
@@ -83,28 +107,26 @@ class ChangeCardCurrencySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CreditCard
-        fields = [
-           'currency'
-        ]
+        fields = ["currency"]
 
     def update(self, instance, validated_data):
         balance = CreditCard.change_balance_by_currency(
-            instance.currency,
-            validated_data['currency'],
-            instance.balance
+            instance.currency, validated_data["currency"], instance.balance
         )
-        instance.currency = validated_data['currency']
+        instance.currency = validated_data["currency"]
         instance.balance = balance
-        instance.save(update_fields=['currency', 'balance'])
+        instance.save(update_fields=["currency", "balance"])
         return instance
 
 
 class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
-    balance = serializers.DecimalField(max_digits=10, decimal_places=2, default=0, min_value=Decimal(0))
+    balance = serializers.DecimalField(
+        max_digits=10, decimal_places=2, default=0, min_value=Decimal(0)
+    )
 
     class Meta:
         model = CreditCard
-        fields = ['balance']
+        fields = ["balance"]
 
     def validate_balance(self, balance):
         if balance < 0:
@@ -112,8 +134,8 @@ class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
         return balance
 
     def update(self, instance, validated_data):
-        instance.balance = instance.balance + validated_data['balance']
-        instance.save(update_fields=['balance'])
+        instance.balance = instance.balance + validated_data["balance"]
+        instance.save(update_fields=["balance"])
         return instance
 
 
@@ -121,13 +143,12 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
     from_card_number = serializers.CharField(required=True, write_only=True)
     to_card_number = serializers.CharField(required=True, write_only=True)
     sum_of_money = serializers.DecimalField(
-        max_digits=10, decimal_places=2,
-        required=True, write_only=True
+        max_digits=10, decimal_places=2, required=True, write_only=True
     )
 
     def validate_from_card_number(self, from_card_number):
         if not CreditCard.objects.filter(
-                number=from_card_number, owner=self.context['request'].user
+            number=from_card_number, owner=self.context["request"].user
         ).exists():
             raise ValidationError(detail="Card with this number is not found")
         return from_card_number
@@ -140,10 +161,13 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
     def validate_sum_of_money(self, sum_of_money):
         if sum_of_money < 0:
             raise ValidationError("Sum of money can`t be negative number")
-        if sum_of_money > CreditCard.objects.get(
-                number=self.initial_data['from_card_number'],
-                owner=self.context['request'].user
-        ).balance:
+        if (
+            sum_of_money
+            > CreditCard.objects.get(
+                number=self.initial_data["from_card_number"],
+                owner=self.context["request"].user,
+            ).balance
+        ):
             raise ValidationError("Insufficient funds")
         return sum_of_money
 
@@ -152,17 +176,17 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
 
     @atomic
     def create(self, validated_data):
-        to_card = get_object_or_404(CreditCard, number=validated_data['to_card_number'])
-        from_card = get_object_or_404(CreditCard, number=validated_data['from_card_number'])
-        from_card.balance = from_card.balance - validated_data['sum_of_money']
-        from_card.save(update_fields=['balance'])
+        to_card = get_object_or_404(CreditCard, number=validated_data["to_card_number"])
+        from_card = get_object_or_404(
+            CreditCard, number=validated_data["from_card_number"]
+        )
+        from_card.balance = from_card.balance - validated_data["sum_of_money"]
+        from_card.save(update_fields=["balance"])
         if to_card.currency != from_card.currency:
             to_card.balance = to_card.balance + CreditCard.change_balance_by_currency(
-                from_card.currency,
-                to_card.currency,
-                validated_data['sum_of_money']
+                from_card.currency, to_card.currency, validated_data["sum_of_money"]
             )
         else:
-            to_card.balance = to_card.balance + validated_data['sum_of_money']
-        to_card.save(update_fields=['balance'])
+            to_card.balance = to_card.balance + validated_data["sum_of_money"]
+        to_card.save(update_fields=["balance"])
         return to_card

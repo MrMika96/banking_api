@@ -8,12 +8,14 @@ from images.serializers import ImageSerializer
 
 
 @extend_schema_view(
-    create=extend_schema(description="Uploading images to the system",
-                         summary="Image upload"),
-    retrieve=extend_schema(description="Getting image by id",
-                           summary="Get image"),
-    destroy=extend_schema(description="Removing an image from the system by its id",
-                          summary="Deleting an image")
+    create=extend_schema(
+        description="Uploading images to the system", summary="Image upload"
+    ),
+    retrieve=extend_schema(description="Getting image by id", summary="Get image"),
+    destroy=extend_schema(
+        description="Removing an image from the system by its id",
+        summary="Deleting an image",
+    ),
 )
 class ImageViewSet(viewsets.ModelViewSet):
     serializer_class = ImageSerializer

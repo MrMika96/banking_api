@@ -5,15 +5,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('credit_cards', '0002_creditcard_balance_creditcard_currency'),
+        ("credit_cards", "0002_creditcard_balance_creditcard_currency"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='creditcard',
-            unique_together={('owner', 'number')},
+            name="creditcard",
+            unique_together={("owner", "number")},
         ),
     ]

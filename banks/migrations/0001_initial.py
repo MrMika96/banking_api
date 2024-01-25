@@ -4,28 +4,55 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Bank',
+            name="Bank",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128)),
-                ('type', models.CharField(choices=[('central bank', 'central bank'), ('commercial bank', 'commercial bank'), ('investment bank', 'investment bank'), ('savings bank', 'savings bank'), ('mortgage bank', 'mortgage bank'), ('special Bank', 'special Bank')], max_length=16)),
-                ('number', models.CharField(max_length=6)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("central bank", "central bank"),
+                            ("commercial bank", "commercial bank"),
+                            ("investment bank", "investment bank"),
+                            ("savings bank", "savings bank"),
+                            ("mortgage bank", "mortgage bank"),
+                            ("special Bank", "special Bank"),
+                        ],
+                        max_length=16,
+                    ),
+                ),
+                ("number", models.CharField(max_length=6)),
             ],
         ),
         migrations.CreateModel(
-            name='PaymentSystem',
+            name="PaymentSystem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128)),
-                ('number', models.CharField(max_length=2)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                ("number", models.CharField(max_length=2)),
             ],
         ),
     ]

@@ -4,20 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('credit_cards', '0001_initial'),
+        ("credit_cards", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='creditcard',
-            name='balance',
+            model_name="creditcard",
+            name="balance",
             field=models.FloatField(default=0),
         ),
         migrations.AddField(
-            model_name='creditcard',
-            name='currency',
-            field=models.CharField(choices=[('USD', 'USD'), ('EUR', 'EUR'), ('JPY', 'JPY'), ('RUB', 'RUB')], default=None, max_length=16, null=True),
+            model_name="creditcard",
+            name="currency",
+            field=models.CharField(
+                choices=[
+                    ("USD", "USD"),
+                    ("EUR", "EUR"),
+                    ("JPY", "JPY"),
+                    ("RUB", "RUB"),
+                ],
+                default=None,
+                max_length=16,
+                null=True,
+            ),
         ),
     ]
