@@ -13,7 +13,7 @@ from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from decouple import config
+from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,13 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-3er9-+zm_6&14umkq=h8fnhd4x1j44os+o3!(^#0k@83^wj$40"
+SECRET_KEY = config("SECRET_KEY", default="", cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 LOCAL = config("LOCAL", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1", cast=Csv()
+)
 
 
 # Application definition
@@ -85,6 +88,9 @@ MIDDLEWARE = [
     "django_tenants.middleware.main.TenantMainMiddleware",
 ]
 
+if DEBUG:
+    MIDDLEWARE += ["utils.sql_utils.PrintSqlQuery"]
+
 ROOT_URLCONF = "banking_api.urls"
 
 TEMPLATES = [
@@ -112,10 +118,10 @@ WSGI_APPLICATION = "banking_api.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django_tenants.postgresql_backend",
-        "NAME": config("DB_NAME", default=""),
-        "USER": config("DB_USER", default="postgres"),
-        "PASSWORD": config("DB_PASSWORD", default=""),
-        "HOST": config("DB_HOST", default="localhost"),
+        "NAME": config("DB_NAME", default="postgres", cast=str),
+        "USER": config("DB_USER", default="postgres", cast=str),
+        "PASSWORD": config("DB_PASSWORD", default="", cast=str),
+        "HOST": config("DB_HOST", default="localhost", cast=str),
         "PORT": config("DB_PORT", default=5432, cast=int),
     }
 }
@@ -167,9 +173,11 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
+    "DEFAULT_PARSER_CLASSES": (
+        "drf_orjson_renderer.parsers.ORJSONParser",
+    ),
     "DEFAULT_RENDERER_CLASSES": (
         "drf_orjson_renderer.renderers.ORJSONRenderer",
-        "drf_orjson_renderer.parsers.ORJSONParser",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",

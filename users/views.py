@@ -87,7 +87,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == "user_register":
-            return [AllowAny]
+            return [AllowAny()]
         return super().get_permissions()
 
     def get_serializer_class(self):

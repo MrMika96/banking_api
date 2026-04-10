@@ -5,7 +5,6 @@ from django.db import models
 from forex_python.converter import CurrencyRates, RatesNotAvailableError
 
 from banks.models import Currency
-from users.models import User
 
 
 class CreditCard(models.Model):
@@ -17,15 +16,15 @@ class CreditCard(models.Model):
         ("CNY", "CNY"),
     ]
     owner = models.ForeignKey(
-        User, related_name="credit_cards", on_delete=models.CASCADE
+        "users.User", related_name="credit_cards", on_delete=models.CASCADE
     )
     number = models.CharField(max_length=19, blank=False, null=False)
     expiration_date = models.DateField(blank=False, null=False)
     is_expired = models.BooleanField(default=False)
     cvv = models.IntegerField()
-    bank = models.ForeignKey("Bank", related_name="cards", on_delete=models.CASCADE)
+    bank = models.ForeignKey("banks.Bank", related_name="cards", on_delete=models.CASCADE)
     payment_system = models.ForeignKey(
-        "PaymentSystem", related_name="cards", on_delete=models.CASCADE
+        "banks.PaymentSystem", related_name="cards", on_delete=models.CASCADE
     )
     currency = models.CharField(
         max_length=16, choices=CURRENCY_CHOICES, null=True, default=None

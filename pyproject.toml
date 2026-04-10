@@ -5,23 +5,23 @@ description = "This is for practice"
 authors = ["MrMika96 <mikamc1996@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 djangorestframework = "^3.14.0"
 Markdown = "^3.4.1"
-django-filter = "^22.1"
+django-filter = "^25.2"
 python-decouple = "^3.7"
 drf-spectacular = "^0.25.1"
 drf-orjson-renderer = "^1.7.1"
 psycopg2-binary = "^2.9.5"
 djangorestframework-simplejwt = "^5.2.2"
-Pillow = "^9.4.0"
 django-tenants = "^3.4.7"
 celery = "^5.2.7"
 redis = "^4.4.2"
 forex-python = "^1.8"
 ruff = "^0.1.14"
-
-[tool.poetry.dev-dependencies]
+pillow = "^12.2.0"
+pygments = "^2.20.0"
+pygments-pprint-sql = "^0.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

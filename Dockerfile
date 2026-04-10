@@ -1,19 +1,21 @@
-FROM python:3.11.6-slim-bullseye
+FROM python:3.12-alpine AS builder
 
-COPY ["pyproject.toml", "poetry.lock", "./"]
+WORKDIR /app
 
-RUN pip install --upgrade pip setuptools wheel poetry && \
-    rm -rf /root/.cache/pip && \
-    rm -rf /root/.cache/pypoetry && \
-    poetry config virtualenvs.create false && \
-    poetry install
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+
+FROM python:3.12-alpine
+
+WORKDIR /app
+
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 COPY . .
 
-ENV DB_NAME="practiceDB"
-ENV DB_USER="practiceUser"
-ENV DB_PASSWORD="practicePw"
-ENV DB_HOST="127.0.0.1"
-ENV DB_PORT="5455"
+RUN chmod +x entrypoint.sh
 
-CMD [ "python3 manage.py runserver"]
+CMD ["/app/entrypoint.sh"]

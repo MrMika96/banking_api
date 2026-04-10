@@ -21,7 +21,9 @@ class Image(models.Model):
     def url(self):
         if LOCAL:
             return (
-                f"http://{connection.schema_name}.{settings.BASE_HOST}{self.image.url}"
+                f"http://{connection.schema_name}."
+                f"{settings.BASE_HOST}{self.image.url}"
             )
         else:
-            return f"https://{connection.schema_name}.{settings.BASE_HOST}/api{self.image.url}"
+            return (f"https://{connection.schema_name}."
+                    f"{settings.BASE_HOST}/api{self.image.url}")
