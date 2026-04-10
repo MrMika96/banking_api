@@ -9,7 +9,6 @@ echo "Running migrations..."
 python3 manage.py migrate
 
 # Создаем публичный тенант проекта
-
 echo "Creating public tenant..."
 python3 manage.py init_tenant || true
 
