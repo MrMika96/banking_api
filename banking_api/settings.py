@@ -221,7 +221,9 @@ SPECTACULAR_SETTINGS = {
     "SERVERS": [
         {
             "url": "{protocol}:/",
-            "variables": {"protocol": {"enum": ["http", "https"], "default": "http"}},
+            "variables": {
+                "protocol": {"enum": ["http", "https"], "default": "http"}
+            },
         }
     ],
 }

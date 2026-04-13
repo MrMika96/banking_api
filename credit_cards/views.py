@@ -27,15 +27,15 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         return qs.select_related("bank", "owner")
 
     def get_serializer_class(self):
-        if self.action == "create":
-            return CreditCardCreateSerializer
-        if self.action == "money_transfer":
-            return TransferFromCardToCardSerializer
-        if self.action == "change_currency":
-            return ChangeCardCurrencySerializer
-        if self.action == "change_currency":
-            return ChangeCardCurrencySerializer
-
+        match self.action:
+            case "create":
+                return CreditCardCreateSerializer
+            case "money_transfer":
+                return TransferFromCardToCardSerializer
+            case "change_currency":
+                return ChangeCardCurrencySerializer
+            case "balance_replenishment":
+                return CardBalanceReplenishmentSerializer
         return super().get_serializer_class()
 
     @extend_schema(request=CreditCardSerializer, responses=CreditCardSerializer)

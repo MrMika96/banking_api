@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.db.transaction import atomic
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 
@@ -64,6 +65,12 @@ class Profile(models.Model):
             models.Index(fields=["middle_name"]),
             models.Index(fields=["last_name"]),
         ]
+
+    @property
+    def age(self) -> int | None:
+        if self.birth_date:
+            return timezone.now().year - self.birth_date.year
+        return None
 
     @staticmethod
     def check_phone_len(phone):

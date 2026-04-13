@@ -1,3 +1,5 @@
+import os
+
 from django.apps import apps
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
@@ -13,7 +15,11 @@ class Command(BaseCommand):
             try:
                 call_command(
                     "loaddata",
-                    f"""{str(app_name.verbose_name).lower()}/fixtures/initial_data.json""",
+                    os.path.join(
+                        app_name.verbose_name.lower(),
+                        "fixtures",
+                        "initial_data.json"
+                    )
                 )
             except CommandError:
                 continue

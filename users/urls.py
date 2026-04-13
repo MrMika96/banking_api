@@ -8,13 +8,15 @@ router.register(prefix="", viewset=views.UserViewSet)
 router.register(prefix="contacts", viewset=views.ContactViewSet)
 
 urlpatterns = [
-    *router.get_urls(),
     path(
-        "me",
+        "me/",
         views.UserMeViewSet.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
         ),
     ),
-    path("auth", views.UserAuthView.as_view()),
-    path("change_credentials", views.UserCredentialsUpdateView.as_view()),
+    path("register/", views.UserRegisterView.as_view()),
+    path("auth/", views.UserAuthView.as_view()),
+    path("change_credentials/", views.UserCredentialsUpdateView.as_view()),
+    path("contacts/bulk_create/", views.ContactBulkCreateViewSet.as_view()),
+    *router.get_urls(),
 ]

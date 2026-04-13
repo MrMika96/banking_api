@@ -40,8 +40,6 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    age = serializers.SerializerMethodField()
-
     class Meta:
         model = Profile
         fields = [
@@ -58,17 +56,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             phone = self.Meta.model.normalize_phone(phone)
         return phone
 
-    @extend_schema_field({"type": "string"})
-    def get_age(self, obj):
-        return (
-            datetime.datetime.utcnow().year - obj.birth_date.year
-            if obj.birth_date
-            else ""
-        )
-
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, min_length=8)
+    password = serializers.CharField(
+        write_only=True, required=True, min_length=8
+    )
     profile = ProfileSerializer()
 
     class Meta:
@@ -250,7 +242,9 @@ class ContactBulkCreateSerializer(serializers.Serializer):
     def to_representation(self, instance):
         response = dict()
         response["count"] = len(instance)
-        response["results"] = ContactSerializerShort(instance=instance, many=True).data
+        response["results"] = ContactSerializerShort(
+            instance=instance, many=True
+        ).data
         return response
 
     @atomic
@@ -258,10 +252,11 @@ class ContactBulkCreateSerializer(serializers.Serializer):
         current_user = validated_data["user"]
         users = User.objects.filter(
             profile__phone__in=validated_data["phone_numbers"]
-        ).values_list("id", flat=True)
+        ).values_list("id", flat=True).select_related("profile")
         results = []
         for user in users:
             contact, created = Contact.objects.get_or_create(
                 user=current_user, contact_id=user
             )
             results.append(contact)
+        return results
