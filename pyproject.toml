@@ -23,6 +23,15 @@ pillow = "^12.2.0"
 pygments = "^2.20.0"
 pygments-pprint-sql = "^0.1.0"
 gunicorn = "^25.3.0"
+coverage = "^7.13.5"
+flake8-broken-line = "^1.0.0"
+flake8-builtins = "^3.1.0"
+flake8-docstrings = "^1.7.0"
+flake8-import-order = "^0.19.2"
+flake8-quotes = "^3.4.0"
+flake8-return = "^1.2.0"
+flake8 = "^7.3.0"
+pep8-naming = "^0.15.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

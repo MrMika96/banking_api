@@ -1,3 +1,4 @@
+"""Module with debug utils."""
 import logging
 from pprint import pformat
 
@@ -10,18 +11,18 @@ logger = logging.getLogger(__name__)
 
 
 def get_client_ip(request):
-    """Function what returns client ip."""
+    """Return client ip."""
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(",")[0]
-    else:
-        ip = request.META.get("REMOTE_ADDR")
-    return ip
+        return x_forwarded_for.split(",")[0]
+    return request.META.get("REMOTE_ADDR")
 
 
 class PrintSqlQuery(MiddlewareMixin):
+    """Adds sql queries info to debug mode."""
+
     def process_response(self, request, response):
-        """Function what will return info about a request to our API."""
+        """Return info about a request to our API."""
         if settings.DEBUG and settings.LOCAL and len(connection.queries) > 0:
             from pygments import highlight
             from pygments.formatters.terminal import TerminalFormatter

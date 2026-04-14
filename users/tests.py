@@ -1,1 +1,1 @@
-# Create your tests here.
+"""Tests for user routes will be here soon."""

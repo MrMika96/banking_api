@@ -1,3 +1,4 @@
+"""Module with pagination utils."""
 from collections import OrderedDict
 from typing import Union
 
@@ -5,11 +6,16 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
-from banking_api.settings import MAX_PAGE_SIZE, PAGE_SIZE_QUERY_PARAM, PAGE_QUERY_PARAM
+from banking_api.settings import (
+    MAX_PAGE_SIZE,
+    PAGE_QUERY_PARAM,
+    PAGE_SIZE_QUERY_PARAM
+)
 
 
 class DynamicPageNumberPagination(PageNumberPagination):
     """A subclass of PageNumberPagination.
+
     Adds support for pagination metadata and overrides for
     pagination query parameters.
     """
@@ -22,7 +28,8 @@ class DynamicPageNumberPagination(PageNumberPagination):
     def get_page_metadata(self):
         """
         For customized metadata.
-        Override this if you need other fields in pagination
+
+        Override this if you need other fields in pagination.
         """
         return {
             "total_results": self.page.paginator.count,
@@ -31,7 +38,10 @@ class DynamicPageNumberPagination(PageNumberPagination):
             "per_page": self.get_page_size(self.request),
         }
 
-    def get_paginated_data(self, data: Union[ReturnDict, ReturnList]) -> OrderedDict:
+    def get_paginated_data(
+        self, data: Union[ReturnDict, ReturnList]
+    ) -> OrderedDict:
+        """Forms paginated data object."""
         meta = self.get_page_metadata()
         if isinstance(data, list):
             data = OrderedDict(
@@ -50,5 +60,8 @@ class DynamicPageNumberPagination(PageNumberPagination):
                 data["meta"] = meta
         return data
 
-    def get_paginated_response(self, data: Union[ReturnDict, ReturnList]) -> Response:
+    def get_paginated_response(
+        self, data: Union[ReturnDict, ReturnList]
+    ) -> Response:
+        """Return formed paginated response."""
         return Response(self.get_paginated_data(data))

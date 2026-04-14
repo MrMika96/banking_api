@@ -1,3 +1,4 @@
+"""Module with documentation for views."""
 from drf_spectacular.utils import extend_schema
 
 
@@ -6,6 +7,7 @@ USERS_TAG = "Users"
 
 
 def get_user_auth_docs() -> dict:
+    """Return documentation for user auth in a system."""
     return {
         "post": extend_schema(
             tags=[AUTH_TAG],
@@ -18,6 +20,7 @@ def get_user_auth_docs() -> dict:
 
 
 def get_user_auth_refresh_docs() -> dict:
+    """Return documentation for user refresh token generation."""
     return {
         "post": extend_schema(
             tags=[AUTH_TAG],
@@ -30,6 +33,7 @@ def get_user_auth_refresh_docs() -> dict:
 
 
 def get_user_me_docs() -> dict:
+    """Return documentation for authenticated users info."""
     return {
         "retrieve": extend_schema(
             tags=[USERS_TAG],
@@ -50,6 +54,7 @@ def get_user_me_docs() -> dict:
 
 
 def get_contact_docs() -> dict:
+    """Return documentation about contacts in a system."""
     return {
         "list": extend_schema(
             tags=[USERS_TAG],
@@ -83,6 +88,7 @@ def get_contact_docs() -> dict:
 
 
 def get_user_docs() -> dict:
+    """Return documentation for users in a system."""
     return {
         "list": extend_schema(
             tags=[USERS_TAG],
@@ -100,6 +106,7 @@ def get_user_docs() -> dict:
 
 
 def get_user_register_docs() -> dict:
+    """Return documentation about user registration in a system."""
     return {
         "post": extend_schema(
             tags=[USERS_TAG],
@@ -111,6 +118,7 @@ def get_user_register_docs() -> dict:
 
 
 def get_user_credentials_update_docs() -> dict:
+    """Return documentation about users credentials update."""
     return {
         "put": extend_schema(
             tags=[USERS_TAG],
@@ -122,6 +130,7 @@ def get_user_credentials_update_docs() -> dict:
 
 
 def get_user_credentials_bulk_create_docs() -> dict:
+    """Return documentation about bulk creation of contacts for user."""
     return {
         "post": extend_schema(
             tags=[USERS_TAG],
