@@ -1,3 +1,4 @@
+"""Module for management command what will fill database with test data."""
 import os
 
 from django.apps import apps
@@ -7,10 +8,13 @@ from django.db.transaction import atomic
 
 
 class Command(BaseCommand):
-    help = "Adding test data to the database"
+    """Adding test data to the database."""
+
+    help = "Adding test data to the database" # noqa A003
 
     @atomic
     def handle(self, *args, **options):
+        """Fill database with test data."""
         for app_name in apps.get_app_configs():
             try:
                 call_command(
