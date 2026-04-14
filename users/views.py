@@ -86,7 +86,7 @@ class UserCredentialsUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserCredentialsUpdateSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ["put"]
+    http_method_names = ["patch"]
 
     def get_object(self):
         """Return authenticated user object."""

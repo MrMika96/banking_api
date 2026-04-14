@@ -1,3 +1,5 @@
+"""Module with models for credit card app."""
+from decimal import Decimal
 import random
 import string
 
@@ -8,6 +10,8 @@ from banks.models import Currency
 
 
 class CreditCard(models.Model):
+    """Model of a credit card."""
+
     CURRENCY_CHOICES = [
         ("USD", "USD"),
         ("EUR", "EUR"),
@@ -22,25 +26,35 @@ class CreditCard(models.Model):
     expiration_date = models.DateField(blank=False, null=False)
     is_expired = models.BooleanField(default=False)
     cvv = models.IntegerField()
-    bank = models.ForeignKey("banks.Bank", related_name="cards", on_delete=models.CASCADE)
+    bank = models.ForeignKey(
+        "banks.Bank", related_name="cards", on_delete=models.CASCADE
+    )
     payment_system = models.ForeignKey(
         "banks.PaymentSystem", related_name="cards", on_delete=models.CASCADE
     )
     currency = models.CharField(
-        max_length=16, choices=CURRENCY_CHOICES, null=True, default=None
+        max_length=16, choices=CURRENCY_CHOICES, blank=True, default=None
     )
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    balance = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0)
+    )
 
     class Meta:
+        """Meta."""
+
         db_table = "credit_cards"
         unique_together = ["owner", "number"]
 
     @classmethod
     def cvv_generator(cls):
+        """Return generated cvv."""
         return "".join(random.choices(string.digits, k=3))
 
     @classmethod
     def card_number_generator(cls, bank_number, payment_system_number):
+        """Return generated card number."""
         existing_numbers = CreditCard.objects.values_list("number", flat=True)
         number = payment_system_number + bank_number
         while True:
@@ -51,13 +65,13 @@ class CreditCard(models.Model):
 
     @classmethod
     def change_balance_by_currency(
-        cls, old_currency: str, new_currency: str, balance: float
-    ):
+        cls, old_currency: str, new_currency: str, balance: Decimal
+    ) -> Decimal:
+        """Return new balance after currency change."""
         if balance == 0:
             return balance
-        else:
-            rates = CurrencyRates()
-            try:
-                return rates.convert(old_currency, new_currency, balance)
-            except RatesNotAvailableError:
-                return Currency.convert(old_currency, new_currency, balance)
+        rates = CurrencyRates()
+        try:
+            return rates.convert(old_currency, new_currency, balance)
+        except RatesNotAvailableError:
+            return Currency.convert(old_currency, new_currency, balance)

@@ -120,7 +120,7 @@ def get_user_register_docs() -> dict:
 def get_user_credentials_update_docs() -> dict:
     """Return documentation about users credentials update."""
     return {
-        "put": extend_schema(
+        "patch": extend_schema(
             tags=[USERS_TAG],
             description="This route is only for changing "
                         "authorized user email and password",
