@@ -1,4 +1,4 @@
-"""Routes module for user."""
+"""Routes module for users."""
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 

@@ -1,23 +1,18 @@
-from drf_spectacular.utils import extend_schema_view, extend_schema
+"""Module with views for image app."""
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 
 from images.models import Image
 from images.serializers import ImageSerializer
+from . import docs
 
 
-@extend_schema_view(
-    create=extend_schema(
-        description="Uploading images to the system", summary="Image upload"
-    ),
-    retrieve=extend_schema(description="Getting image by id", summary="Get image"),
-    destroy=extend_schema(
-        description="Removing an image from the system by its id",
-        summary="Deleting an image",
-    ),
-)
+@extend_schema_view(**docs.get_images_docs())
 class ImageViewSet(viewsets.ModelViewSet):
+    """Image view set."""
+
     serializer_class = ImageSerializer
     parser_classes = (MultiPartParser,)
     queryset = Image.objects.all()
