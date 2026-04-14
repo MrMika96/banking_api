@@ -3,7 +3,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
 
 from . import docs
 from users.models import User, Contact
@@ -22,7 +25,13 @@ from utils.paginations import DynamicPageNumberPagination
 
 @extend_schema_view(**docs.get_user_auth_docs())
 class UserAuthView(TokenObtainPairView):
+    """View for user authentication in API."""
     serializer_class = UserTokenObtainPairSerializer
+
+
+@extend_schema_view(**docs.get_user_auth_refresh_docs())
+class UserAuthRefreshView(TokenRefreshView):
+    """View what takes refresh token and returns access token. """
 
 
 @extend_schema_view(**docs.get_user_me_docs())
@@ -33,7 +42,6 @@ class UserMeViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         qs = super().get_queryset()
-
         return (
             qs.filter(id=self.request.user.id)
             .select_related("profile")

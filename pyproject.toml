@@ -22,6 +22,7 @@ ruff = "^0.1.14"
 pillow = "^12.2.0"
 pygments = "^2.20.0"
 pygments-pprint-sql = "^0.1.0"
+gunicorn = "^25.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

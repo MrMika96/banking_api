@@ -16,6 +16,7 @@ urlpatterns = [
     ),
     path("register/", views.UserRegisterView.as_view()),
     path("auth/", views.UserAuthView.as_view()),
+    path('auth/refresh/', views.UserAuthRefreshView.as_view()),
     path("change_credentials/", views.UserCredentialsUpdateView.as_view()),
     path("contacts/bulk_create/", views.ContactBulkCreateViewSet.as_view()),
     *router.get_urls(),

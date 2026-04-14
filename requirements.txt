@@ -17,6 +17,7 @@ djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.25.1
 drf_orjson_renderer==1.8.0
 forex-python==1.9.2
+gunicorn==25.3.0
 idna==3.11
 inflection==0.5.1
 jsonschema==4.26.0
