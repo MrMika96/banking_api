@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "BaBank",
-      "type": "central bank",
+      "bank_type": "cnt",
       "number": "001122"
     }
   },
@@ -13,7 +13,7 @@
     "pk": 2,
     "fields": {
       "name": "Pickles",
-      "type": "commercial bank",
+      "bank_type": "com",
       "number": "112233"
     }
   },
@@ -22,7 +22,7 @@
     "pk": 3,
     "fields": {
       "name": "Invest Nevest",
-      "type": "investment bank",
+      "bank_type": "inv",
       "number": "223344"
     }
   },
@@ -31,7 +31,7 @@
     "pk": 4,
     "fields": {
       "name": "Bonfire",
-      "type": "savings bank",
+      "bank_type": "sav",
       "number": "334455"
     }
   },
@@ -40,7 +40,7 @@
     "pk": 5,
     "fields": {
       "name": "HankHill Bank",
-      "type": "mortgage bank",
+      "bank_type": "mrg",
       "number": "445566"
     }
   },
@@ -49,7 +49,7 @@
     "pk": 6,
     "fields": {
       "name": "OnlyForSpiders Bank",
-      "type": "special bank",
+      "bank_type": "spc",
       "number": "556677"
     }
   },

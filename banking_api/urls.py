@@ -1,4 +1,4 @@
-"""banking_api URL Configuration
+"""URL Configuration for banking_api.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -23,7 +23,10 @@ urlpatterns = [
     path("credit_cards/", include("credit_cards.urls")),
     path("images/", include("images.urls")),
     path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path(
+        "api-auth/",
+        include("rest_framework.urls", namespace="rest_framework")
+    ),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "docs/",

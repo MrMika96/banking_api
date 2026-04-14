@@ -1,3 +1,4 @@
+"""Module with celery tasks for credit card app."""
 import logging
 
 from django.apps import apps
@@ -8,10 +9,11 @@ from banking_api.celery import app
 
 @app.task(default_retry_delay=600, max_retrues=7)
 def update_currency_rates():
+    """Update currency rates."""
     logger = logging.getLogger(__name__)
     logger.info(msg="Execute change_expiration_status_for_card")
     rates = CurrencyRates()
-    Currency = apps.get_model("banks", "Currency")
+    Currency = apps.get_model("banks", "Currency") # noqa N806
     currencies = Currency.objects.all()
     for currency in currencies:
         for rate in currency.rates:

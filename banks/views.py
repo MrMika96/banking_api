@@ -1,3 +1,4 @@
+"""Module with views for banks app."""
 from django.db.models import Count
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -5,12 +6,14 @@ from rest_framework.permissions import IsAuthenticated
 from banks.models import Bank, PaymentSystem
 from banks.serializers import (
     BanksSerializer,
-    PaymentSystemSerializer,
     DetailedBankSerializer,
+    PaymentSystemSerializer,
 )
 
 
 class BanksViewSet(viewsets.ModelViewSet):
+    """View set for banks."""
+
     queryset = Bank.objects.all()
     pagination_class = None
     serializer_class = BanksSerializer
@@ -18,22 +21,26 @@ class BanksViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "put", "delete"]
 
     def get_queryset(self):
+        """Return queryset."""
         qs = super().get_queryset()
-
         if self.action == "retrieve":
-            qs = qs.prefetch_related("cards", "cards__owner").annotate(
-                number_of_clients=Count("cards__owner", distinct=True)
+            return qs.prefetch_related("cards", "cards__owner").annotate(
+                number_of_clients=Count(
+                    "cards__owner", distinct=True
+                )
             )
         return qs
 
     def get_serializer_class(self):
+        """Return serializer based on action."""
         if self.action == "retrieve":
             return DetailedBankSerializer
-
         return super().get_serializer_class()
 
 
 class PaymentSystemViewSet(viewsets.ModelViewSet):
+    """View set for payment system."""
+
     queryset = PaymentSystem.objects.all()
     pagination_class = None
     serializer_class = PaymentSystemSerializer

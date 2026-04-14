@@ -1,3 +1,4 @@
+"""Routes module for banks."""
 from rest_framework.routers import DefaultRouter
 
 from banks import views
