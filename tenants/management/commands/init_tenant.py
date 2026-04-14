@@ -1,13 +1,17 @@
+"""Module for management command what creates tenants in a system."""
 from django.core.management.base import BaseCommand, CommandError
 from django.db.transaction import atomic
 
-from tenants.models import Tenant, Domain
+from tenants.models import Domain, Tenant
 
 
 class Command(BaseCommand):
-    help = "Creates new tenants for database"
+    """Creates new tenants for database."""
+
+    help = "Creates new tenants for database" # noqa A003
 
     def add_arguments(self, parser):
+        """Add new custom arguments to command."""
         parser.add_argument(
             "--schema_name",
             default="public",
@@ -29,7 +33,10 @@ class Command(BaseCommand):
 
     @atomic
     def handle(self, *args, **options):
-        if not Tenant.objects.filter(schema_name=options["schema_name"]).exists():
+        """Create a tenant in a system."""
+        if not Tenant.objects.filter(
+                schema_name=options["schema_name"]
+        ).exists():
             tenant = Tenant(
                 schema_name=options["schema_name"],
                 name=options["name"]
