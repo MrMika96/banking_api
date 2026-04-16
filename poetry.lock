@@ -502,6 +502,25 @@ Django = ">=5.2"
 drf = ["djangorestframework"]
 
 [[package]]
+name = "django-redis"
+version = "6.0.0"
+description = "Full featured redis cache backend for Django."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "django_redis-6.0.0-py3-none-any.whl", hash = "sha256:20bf0063a8abee567eb5f77f375143c32810c8700c0674ced34737f8de4e36c0"},
+    {file = "django_redis-6.0.0.tar.gz", hash = "sha256:2d9cb12a20424a4c4dde082c6122f486628bae2d9c2bee4c0126a4de7fda00dd"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+redis = ">=4.0.2"
+
+[package.extras]
+hiredis = ["redis[hiredis] (>=4.0.2)"]
+
+[[package]]
 name = "django-tenants"
 version = "3.10.1"
 description = "Tenant support for Django using PostgreSQL schemas."
@@ -981,14 +1000,14 @@ files = [
 
 [[package]]
 name = "packaging"
-version = "26.0"
+version = "26.1"
 description = "Core utilities for Python packages"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "packaging-26.0-py3-none-any.whl", hash = "sha256:b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529"},
-    {file = "packaging-26.0.tar.gz", hash = "sha256:00243ae351a257117b6a241061796684b084ed1c516a08c48a3f7e147a9d80b4"},
+    {file = "packaging-26.1-py3-none-any.whl", hash = "sha256:5d9c0669c6285e491e0ced2eee587eaf67b670d94a19e94e3984a481aba6802f"},
+    {file = "packaging-26.1.tar.gz", hash = "sha256:f042152b681c4bfac5cae2742a55e103d27ab2ec0f3d88037136b6bfe7c9c5de"},
 ]
 
 [[package]]
@@ -1894,4 +1913,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "f3d53d322774aadefd5c9500d5b00c46e47f052635d1468e2d69ede328692427"
+content-hash = "730a0a9bf693b72bc7e5e7ac1123d6148e6bf88a3f483b92699f0e30694a975c"

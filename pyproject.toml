@@ -32,6 +32,7 @@ flake8-quotes = "^3.4.0"
 flake8-return = "^1.2.0"
 flake8 = "^7.3.0"
 pep8-naming = "^0.15.1"
+django-redis = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -242,3 +242,18 @@ PAGE_SIZE = 10
 TENANT_MODEL = "tenants.Tenant"
 
 TENANT_DOMAIN_MODEL = "tenants.Domain"
+
+REDIS_URL = config("REDIS_URL", default="redis://redis:6379")
+
+CELERY_BROKER_URL = f"{REDIS_URL}/0"
+CELERY_RESULT_BACKEND = f"{REDIS_URL}/1"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_URL}/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

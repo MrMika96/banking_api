@@ -12,6 +12,7 @@ click-repl==0.3.0
 coverage==7.13.5
 Django==6.0.4
 django-filter==25.2
+django-redis==6.0.0
 django-tenants==3.10.1
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1

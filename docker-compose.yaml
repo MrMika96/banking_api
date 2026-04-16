@@ -8,6 +8,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - DB_HOST=db
 
@@ -26,6 +28,29 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: valkey/valkey:9.0.3-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: valkey-server --loglevel warning
+    healthcheck:
+      test: [ "CMD", "valkey-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  celery_worker:
+    build: .
+    command: celery -A banking_api worker --loglevel=info --concurrency 1
+    environment:
+      - CELERY_BROKER_URL=${REDIS_URL}/0
+      - CELERY_RESULT_BACKEND=${REDIS_URL}/1
+    depends_on:
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
