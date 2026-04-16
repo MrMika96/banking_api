@@ -1,4 +1,5 @@
 """Module with views for credit cards app."""
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -10,8 +11,10 @@ from credit_cards.serializers import (
     CreditCardSerializer,
     TransferFromCardToCardSerializer,
 )
+from . import docs
 
 
+@extend_schema_view(**docs.get_credit_card_docs())
 class CreditCardViewSet(viewsets.ModelViewSet):
     """Credit card view set."""
 
@@ -34,6 +37,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 
+@extend_schema_view(**docs.get_credit_card_transfer_docs())
 class CreditCardMoneyTransferView(generics.CreateAPIView):
     """Transfer money from one card to another."""
 
@@ -42,6 +46,7 @@ class CreditCardMoneyTransferView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+@extend_schema_view(**docs.get_credit_card_currency_change_docs())
 class CreditCardChangeCurrencyView(generics.UpdateAPIView):
     """Change credit card currency."""
 
@@ -51,6 +56,7 @@ class CreditCardChangeCurrencyView(generics.UpdateAPIView):
     http_method_names = ["put"]
 
 
+@extend_schema_view(**docs.get_credit_card_balance_replenishment_docs())
 class CreditCardBalanceReplenishmentView(generics.UpdateAPIView):
     """Replenish credit card balance."""
 
