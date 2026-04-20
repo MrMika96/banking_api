@@ -14,4 +14,4 @@ python3 manage.py init_tenant || true
 
 # Запускаем сервер, заменяя текущий процесс
 echo "Starting server..."
-exec gunicorn --reload --bind 0.0.0.0:8000 banking_api.wsgi:application
+gunicorn --bind 0.0.0.0:8000 banking_api.wsgi:application --reload

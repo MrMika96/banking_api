@@ -12,6 +12,8 @@ services:
         condition: service_healthy
     environment:
       - DB_HOST=db
+    volumes:
+      - .:/app
 
   db:
     image: postgres:18-alpine
@@ -49,8 +51,12 @@ services:
       - CELERY_BROKER_URL=${REDIS_URL}/0
       - CELERY_RESULT_BACKEND=${REDIS_URL}/1
     depends_on:
+      db:
+        condition: service_healthy
       redis:
         condition: service_healthy
+      web:
+        condition: service_started
 
 volumes:
   postgres_data:
