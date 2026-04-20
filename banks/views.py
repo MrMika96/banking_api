@@ -1,5 +1,6 @@
 """Module with views for banks app."""
 from django.db.models import Count
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -9,8 +10,10 @@ from banks.serializers import (
     DetailedBankSerializer,
     PaymentSystemSerializer,
 )
+from . import docs
 
 
+@extend_schema_view(**docs.get_bank_view_set_docs())
 class BanksViewSet(viewsets.ModelViewSet):
     """View set for banks."""
 
@@ -38,6 +41,7 @@ class BanksViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 
+@extend_schema_view(**docs.get_payment_system_docs())
 class PaymentSystemViewSet(viewsets.ModelViewSet):
     """View set for payment system."""
 
