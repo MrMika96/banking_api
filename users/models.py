@@ -76,6 +76,14 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True
     )
+    profile_image = models.OneToOneField(
+        "images.Image",
+        related_name="profile",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        default=None
+    )
 
     class Meta:
         """Meta."""

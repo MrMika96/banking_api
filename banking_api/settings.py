@@ -30,7 +30,8 @@ LOCAL = config("LOCAL", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1", cast=Csv()
+    default="localhost,127.0.0.1",
+    cast=Csv()
 )
 
 
@@ -190,8 +191,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+ACCESS_TOKEN_LIFETIME = timedelta(hours=1) if DEBUG else timedelta(minutes=5)
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": ACCESS_TOKEN_LIFETIME,
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,

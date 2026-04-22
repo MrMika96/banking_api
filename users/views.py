@@ -119,10 +119,8 @@ class ContactViewSet(viewsets.ModelViewSet):
             .select_related(
                 "user",
                 "user__profile",
-                "user__profile__image",
                 "contact",
                 "contact__profile",
-                "contact__profile__image",
             )
             .order_by(
                 "-favorite",

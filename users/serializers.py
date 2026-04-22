@@ -44,6 +44,7 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer for a profile."""
+    image = ImageSerializer(allow_null=True, read_only=True)
 
     class Meta:
         """Meta."""
@@ -56,6 +57,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone",
             "birth_date",
             "age",
+            "image"
         ]
 
     def validate_phone(self, phone: str):
