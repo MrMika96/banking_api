@@ -44,6 +44,7 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer for a profile."""
+
     image = ImageSerializer(allow_null=True, read_only=True)
 
     class Meta:

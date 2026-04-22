@@ -5,8 +5,8 @@ from rest_framework.routers import DefaultRouter
 from users import views
 
 router = DefaultRouter()
-router.register(prefix="contacts", viewset=views.ContactViewSet, basename="contact")
-router.register(prefix="", viewset=views.UserViewSet, basename="user")
+router.register(prefix="contacts", viewset=views.ContactViewSet)
+router.register(prefix="", viewset=views.UserViewSet)
 
 urlpatterns = [
     path(
