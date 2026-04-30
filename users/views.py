@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
@@ -22,6 +23,7 @@ from users.serializers import (
 )
 from utils.paginations import DynamicPageNumberPagination
 from . import docs
+from .services.user_services import register_user
 
 
 @extend_schema_view(**docs.get_user_auth_docs())
@@ -62,6 +64,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DynamicPageNumberPagination
 
     def get_queryset(self):
         """Return queryset."""
@@ -70,13 +73,23 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @extend_schema_view(**docs.get_user_register_docs())
-class UserRegisterView(generics.CreateAPIView):
+class UserRegisterView(generics.GenericAPIView):
     """Register user in a system."""
 
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny]
     authentication_classes = []
+
+    def post(self, request):
+        input_serializer = self.get_serializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        user = register_user(input_serializer.validated_data)
+        output_serializer = self.get_serializer(user)
+        return Response(
+            data=output_serializer.data,
+            status=201
+        )
 
 
 @extend_schema_view(**docs.get_user_credentials_update_docs())

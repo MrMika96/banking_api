@@ -87,14 +87,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise ValidationError(detail="User with that email already exists")
         return self.Meta.model.objects.normalize_email(email)
 
-    def create(self, validated_data):
-        """Register new user in a system."""
-        return User.objects.register(
-            email=validated_data["email"],
-            password=validated_data["password"],
-            profile=validated_data["profile"],
-        )
-
 
 class UserMeSerializer(serializers.ModelSerializer):
     """Serializer for authenticated user."""
