@@ -6,9 +6,10 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
+COPY requirements.dev.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
+    pip install --no-cache-dir -r requirements.txt &&\
+    pip install --no-cache-dir -r requirements.dev.txt
 
 FROM python:3.12-alpine
 

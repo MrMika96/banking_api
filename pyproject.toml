@@ -10,7 +10,6 @@ djangorestframework = "^3.14.0"
 Markdown = "^3.4.1"
 django-filter = "^25.2"
 python-decouple = "^3.7"
-drf-spectacular = "^0.25.1"
 drf-orjson-renderer = "^1.7.1"
 psycopg2-binary = "^2.9.5"
 djangorestframework-simplejwt = "^5.2.2"
@@ -18,7 +17,6 @@ django-tenants = "^3.4.7"
 celery = "^5.2.7"
 redis = "^4.4.2"
 forex-python = "^1.8"
-ruff = "^0.1.14"
 pillow = "^12.2.0"
 pygments = "^2.20.0"
 pygments-pprint-sql = "^0.1.0"
@@ -33,7 +31,25 @@ flake8-return = "^1.2.0"
 flake8 = "^7.3.0"
 pep8-naming = "^0.15.1"
 django-redis = "^6.0.0"
+django = "^6.0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "flake8 (>=7.3.0,<8.0.0)",
+    "flake8-broken-line (>=1.0.0,<2.0.0)",
+    "flake8-builtins (>=3.1.0,<4.0.0)",
+    "flake8-docstrings (>=1.7.0,<2.0.0)",
+    "flake8-import-order (>=0.19.2,<0.20.0)",
+    "flake8-quotes (>=3.4.0,<4.0.0)",
+    "flake8-return (>=1.2.0,<2.0.0)",
+    "pep8-naming (>=0.15.1,<0.16.0)",
+    "coverage (>=7.13.5,<8.0.0)",
+    "pygments (>=2.20.0,<3.0.0)",
+    "pygments-pprint-sql (>=0.1.0,<0.2.0)",
+    "drf-spectacular (>=0.29.0,<0.30.0)",
+    "ruff (>=0.15.12,<0.16.0)"
+]
