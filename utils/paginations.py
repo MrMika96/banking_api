@@ -8,8 +8,8 @@ from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
 from banking_api.settings import (
     MAX_PAGE_SIZE,
-    PAGE_SIZE,
     PAGE_QUERY_PARAM,
+    PAGE_SIZE,
     PAGE_SIZE_QUERY_PARAM
 )
 

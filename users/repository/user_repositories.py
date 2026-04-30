@@ -1,4 +1,6 @@
+"""repository module for user app."""
 from collections import OrderedDict
+
 from ..models import User
 
 

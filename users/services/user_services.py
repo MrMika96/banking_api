@@ -1,3 +1,4 @@
+"""Service module for user app."""
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 

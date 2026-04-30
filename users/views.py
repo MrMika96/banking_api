@@ -82,6 +82,7 @@ class UserRegisterView(generics.GenericAPIView):
     authentication_classes = []
 
     def post(self, request):
+        """Create new user in a system."""
         input_serializer = self.get_serializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
         user = register_user(input_serializer.validated_data)
