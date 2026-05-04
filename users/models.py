@@ -1,9 +1,9 @@
 """Module with models for user app."""
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import UserManager as DefaultUserManager
 from django.db import models
 from django.db.transaction import atomic
 from django.utils import timezone
-from django.contrib.auth.models import UserManager as DefaultUserManager
 from rest_framework.exceptions import ValidationError
 
 
