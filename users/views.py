@@ -15,6 +15,7 @@ from users.serializers import (
     ContactBulkCreateSerializer,
     ContactSerializer,
     ContactSerializerShort,
+    RepresentationContactBulkCreateSerializer,
     UserCredentialsUpdateSerializer,
     UserMeSerializer,
     UserRegisterSerializer,
@@ -23,7 +24,11 @@ from users.serializers import (
 )
 from utils.paginations import DynamicPageNumberPagination
 from . import docs
-from .services.user_services import register_user
+from .services.user_services import (
+    bulk_create_contacts,
+    register_user,
+    update_users_credentials
+)
 
 
 @extend_schema_view(**docs.get_user_auth_docs())
@@ -94,17 +99,24 @@ class UserRegisterView(generics.GenericAPIView):
 
 
 @extend_schema_view(**docs.get_user_credentials_update_docs())
-class UserCredentialsUpdateView(generics.UpdateAPIView):
+class UserCredentialsUpdateView(generics.GenericAPIView):
     """Update users credentials."""
 
     queryset = User.objects.all()
     serializer_class = UserCredentialsUpdateSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ["patch"]
 
-    def get_object(self):
-        """Return authenticated user object."""
-        return self.request.user
+    def patch(self, request, *args, **kwargs):
+        """Return user with partially update credentials."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            data=self.get_serializer(update_users_credentials(
+                user=self.request.user,
+                user_data=serializer.validated_data
+            )).data,
+            status=200
+        )
 
 
 @extend_schema_view(**docs.get_contact_docs())
@@ -154,9 +166,24 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(**docs.get_user_credentials_bulk_create_docs())
-class ContactBulkCreateViewSet(generics.CreateAPIView):
+class ContactBulkCreateViewSet(generics.GenericAPIView):
     """Bulk create view for user contacts."""
 
     queryset = Contact.objects.all()
     serializer_class = ContactBulkCreateSerializer
     permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """Bulk create contacts for user."""
+        input_serializer = self.get_serializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        output_serializer = RepresentationContactBulkCreateSerializer(
+            bulk_create_contacts(
+                self.request.user,
+                input_serializer.validated_data
+            )
+        )
+        return Response(
+            data=output_serializer.data,
+            status=201
+        )

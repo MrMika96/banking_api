@@ -1,6 +1,5 @@
 """Serialization module for users."""
 from django.contrib.auth.models import update_last_login
-from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, ValidationError
@@ -120,9 +119,10 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "email"]
 
 
-class UserCredentialsUpdateSerializer(serializers.ModelSerializer):
+class UserCredentialsUpdateSerializer(serializers.Serializer):
     """Serializer for user credentials."""
 
+    email = serializers.EmailField(required=False)
     password = serializers.CharField(
         write_only=True,
         required=False,
@@ -144,13 +144,13 @@ class UserCredentialsUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = ["email", "password", "old_password"]
 
-    def validate_email(self, email):
+    def validate_email(self, email: str) -> str:
         """Validate entered email."""
         if self.Meta.model.objects.filter(email=email).exists():
             raise ValidationError("User with that email already exists")
         return self.Meta.model.objects.normalize_email(email)
 
-    def validate_password(self, password):
+    def validate_password(self, password: str) -> str:
         """Validate entered password."""
         old_password = self.initial_data.get("old_password")
         user = self.context["request"].user
@@ -163,17 +163,6 @@ class UserCredentialsUpdateSerializer(serializers.ModelSerializer):
         if not password:
             raise ValidationError("To change password you must enter new one")
         return password
-
-    def update(self, instance, validated_data):
-        """Update users credentials."""
-        instance.email = validated_data["email"]
-        if (
-                validated_data.get("password") and
-                validated_data.get("old_password")
-        ):
-            instance.set_password(validated_data["password"])
-        instance.save()
-        return instance
 
 
 class MaintainerSerializer(serializers.ModelSerializer):
@@ -285,7 +274,6 @@ class ContactSerializerShort(serializers.ModelSerializer):
 class ContactBulkCreateSerializer(serializers.Serializer):
     """Serializer for bulk create of contacts."""
 
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     phone_numbers = serializers.ListField(
         child=serializers.CharField(),
         write_only=True,
@@ -309,26 +297,9 @@ class ContactBulkCreateSerializer(serializers.Serializer):
             raise NotFound("Phone number not found")
         return normalized_phones
 
-    def to_representation(self, instance):
-        """Change response representation."""
-        response = dict()
-        response["count"] = len(instance)
-        response["results"] = ContactSerializerShort(
-            instance=instance, many=True
-        ).data
-        return response
 
-    @atomic
-    def create(self, validated_data):
-        """Create users contacts."""
-        current_user = validated_data["user"]
-        users = User.objects.filter(
-            profile__phone__in=validated_data["phone_numbers"]
-        ).values_list("id", flat=True).select_related("profile")
-        results = []
-        for user in users:
-            contact, created = Contact.objects.get_or_create(
-                user=current_user, contact_id=user
-            )
-            results.append(contact)
-        return results
+class RepresentationContactBulkCreateSerializer(serializers.Serializer):
+    """Representation serializer for contacts bulk create."""
+
+    count = serializers.IntegerField(min_value=0, default=0)
+    results = ContactSerializerShort(many=True)

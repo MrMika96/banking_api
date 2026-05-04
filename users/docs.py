@@ -1,6 +1,7 @@
 """Module with documentation for views."""
 from drf_spectacular.utils import extend_schema
 
+from users.serializers import RepresentationContactBulkCreateSerializer
 
 AUTH_TAG = "Authentication"
 USERS_TAG = "Users"
@@ -137,5 +138,6 @@ def get_user_credentials_bulk_create_docs() -> dict:
             description="Route for uploading a bunch of users (by their "
                         "phone number) to the authorized user's contact list",
             summary="Upload a pack of contacts",
+            responses=RepresentationContactBulkCreateSerializer
         )
     }
