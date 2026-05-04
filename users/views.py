@@ -5,22 +5,23 @@ from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
 
-from users.models import Contact, User
+from users.models import Contact, Profile, User
 from users.serializers import (
     ContactBulkCreateSerializer,
     ContactSerializer,
     ContactSerializerShort,
+    ProfileSerializer,
     RepresentationContactBulkCreateSerializer,
     UserCredentialsUpdateSerializer,
     UserMeSerializer,
     UserRegisterSerializer,
     UserSerializer,
-    UserTokenObtainPairSerializer,
 )
 from utils.paginations import DynamicPageNumberPagination
 from . import docs
@@ -35,7 +36,7 @@ from .services.user_services import (
 class UserAuthView(TokenObtainPairView):
     """View for user authentication in API."""
 
-    serializer_class = UserTokenObtainPairSerializer
+    serializer_class = TokenObtainPairSerializer
 
 
 @extend_schema_view(**docs.get_user_auth_refresh_docs())
@@ -60,6 +61,20 @@ class UserMeViewSet(viewsets.ModelViewSet):
             .annotate(registered_cards_count=Count("credit_cards"))
             .first()
         )
+
+
+@extend_schema_view(**docs.get_user_me_profile_docs())
+class UserMeProfileView(generics.UpdateAPIView):
+    """View for profile of a user."""
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ["patch"]
+
+    def get_object(self):
+        """Return authorized users profile."""
+        return self.request.user.profile
 
 
 @extend_schema_view(**docs.get_user_docs())

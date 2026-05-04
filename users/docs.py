@@ -34,22 +34,28 @@ def get_user_auth_refresh_docs() -> dict:
 
 
 def get_user_me_docs() -> dict:
-    """Return documentation for authenticated users info."""
+    """Return documentation for authenticated user info."""
     return {
         "retrieve": extend_schema(
             tags=[USERS_TAG],
             description="Route for viewing your own information",
             summary="Get authorized user data",
         ),
-        "update": extend_schema(
-            tags=[USERS_TAG],
-            description="Route for updating your profile information",
-            summary="Update authorized user data",
-        ),
         "destroy": extend_schema(
             tags=[USERS_TAG],
             description="Route for deletion of your own account from system",
             summary="delete authorized user",
+        ),
+    }
+
+
+def get_user_me_profile_docs() -> dict:
+    """Return documentation for authenticated users profile info."""
+    return {
+        "patch": extend_schema(
+            tags=[USERS_TAG],
+            description="Route for updating your profile information",
+            summary="Update authorized user data",
         ),
     }
 

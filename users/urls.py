@@ -12,9 +12,10 @@ urlpatterns = [
     path(
         "me/",
         views.UserMeViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destroy"}
+            {"get": "retrieve", "delete": "destroy"}
         ),
     ),
+    path("me/profile/", views.UserMeProfileView.as_view()),
     path("register/", views.UserRegisterView.as_view()),
     path("auth/", views.UserAuthView.as_view()),
     path("auth/refresh/", views.UserAuthRefreshView.as_view()),

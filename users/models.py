@@ -3,6 +3,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.db.transaction import atomic
 from django.utils import timezone
+from django.contrib.auth.models import UserManager as DefaultUserManager
 from rest_framework.exceptions import ValidationError
 
 
@@ -16,13 +17,7 @@ class UserManager(models.Manager):
     @staticmethod
     def normalize_email(email):
         """Normalize users email."""
-        try:
-            email_name, domain_part = email.strip().rsplit("@", 1)
-        except (ValueError, AttributeError):
-            pass
-        else:
-            email = f"{email_name}@{domain_part}".lower()
-        return email
+        return DefaultUserManager.normalize_email(email)
 
     @atomic
     def _register(self, password: str, profile: dict, email: str) -> "User":

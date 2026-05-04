@@ -1,44 +1,9 @@
 """Serialization module for users."""
-from django.contrib.auth.models import update_last_login
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, ValidationError
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.settings import api_settings
 
 from images.serializers import ImageSerializer
 from users.models import Contact, Profile, User
-
-
-class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """Serializer for access and refresh tokens."""
-
-    def validate(self, attrs):
-        """Validate data."""
-        self.user = get_object_or_404(User, email=attrs["email"])
-        data = super().validate(attrs)
-
-        refresh = self.get_token(self.user)
-
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-
-        if api_settings.UPDATE_LAST_LOGIN:
-            update_last_login(None, self.user)
-        return data
-
-    def validate_email(self, email):
-        """Validate entered email."""
-        if not User.objects.filter(email=email).exists():
-            raise NotFound(detail="User not found")
-        return email
-
-    def validate_password(self, password):
-        """Validate entered password."""
-        user = get_object_or_404(User, email=self.initial_data["email"])
-        if not user.check_password(password):
-            raise ValidationError(detail="Incorrect password")
-        return password
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -99,11 +64,6 @@ class UserMeSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "profile", "registered_cards_count"]
         read_only_fields = ["id", "email"]
-
-    def update(self, instance, validated_data):
-        """Update authenticated user data."""
-        super().update(instance.profile, validated_data.pop("profile"))
-        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
