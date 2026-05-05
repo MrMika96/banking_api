@@ -17,8 +17,11 @@ urlpatterns = [
     ),
     path("me/profile/", views.UserMeProfileView.as_view()),
     path("register/", views.UserRegisterView.as_view()),
-    path("auth/", views.UserAuthView.as_view()),
-    path("auth/refresh/", views.UserAuthRefreshView.as_view()),
+    path("auth/", views.UserAuthView.as_view(), name="user-auth"),
+    path(
+        "auth/refresh/",
+        views.UserAuthRefreshView.as_view(),
+        name="user-refresh"),
     path("change_credentials/", views.UserCredentialsUpdateView.as_view()),
     path("contacts/bulk_create/", views.ContactBulkCreateViewSet.as_view()),
     *router.get_urls(),

@@ -243,7 +243,6 @@ MAX_PAGE_SIZE = 30
 PAGE_SIZE = 10
 
 TENANT_MODEL = "tenants.Tenant"
-
 TENANT_DOMAIN_MODEL = "tenants.Domain"
 
 REDIS_URL = config("REDIS_URL", default="redis://redis:6379")
