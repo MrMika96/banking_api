@@ -1,9 +1,14 @@
 name: Django Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
 
     services:
@@ -17,9 +22,11 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -31,9 +38,22 @@ jobs:
         run: |
           pip install -r requirements.dev.txt
 
-      - name: Run tests
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+      - name: Create .env from example
+        run: |
+          cp .env.example .env
+          echo "SECRET_KEY=test-key-github-actions" > .env
+          echo "DEBUG=True" >> .env
+          echo "LOCAL=True" >> .env
+          echo "DB_NAME=test_db" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=5432" >> .env
+
+      - name: Run migrations
         run: |
           python manage.py migrate
-          python manage.py test --parallel
+
+      - name: Run tests
+        run: |
+          python manage.py test --parallel --verbosity=2
