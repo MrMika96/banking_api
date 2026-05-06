@@ -1,7 +1,10 @@
 """Module with documentation for views."""
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from users.serializers import RepresentationContactBulkCreateSerializer
+from users.serializers import (
+    RepresentationContactBulkCreateSerializer,
+    UserRegisterSerializer
+)
 
 AUTH_TAG = "Authentication"
 USERS_TAG = "Users"
@@ -120,6 +123,12 @@ def get_user_register_docs() -> dict:
             description="User system registration, takes users email, "
                         "password and profile data and saves it in our system",
             summary="User registration in the system",
+            responses={
+                201: OpenApiResponse(
+                    response=UserRegisterSerializer,
+                    description="User successfully registered"
+                )
+            }
         )
     }
 
