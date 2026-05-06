@@ -1,4 +1,6 @@
 """Module for e2e testing for users app."""
+from datetime import timedelta
+
 from django.urls import reverse
 from django.utils import timezone
 from django_tenants.test.cases import TenantTestCase
@@ -17,15 +19,6 @@ class BaseTenantTestCase(TenantTestCase):
         self.tenant.save()
         self.domain.save()
         self.c = TenantClient(self.tenant)
-
-
-class TestAccessRefreshTokens(BaseTenantTestCase):
-    """Test suite for JWT access and refresh token authentication flow."""
-
-    def setUp(self):
-        """Set up test environment before each test method."""
-        super().setUp()
-
         self.test_user_data = {
             "email": "user@test.com",
             "password": "test123456",
@@ -38,6 +31,14 @@ class TestAccessRefreshTokens(BaseTenantTestCase):
             }
         }
         self.user = User.objects.register(**self.test_user_data)
+
+
+class TestAccessRefreshTokens(BaseTenantTestCase):
+    """Test suite for JWT access and refresh token authentication flow."""
+
+    def setUp(self):
+        """Set up test environment before each test method."""
+        super().setUp()
 
     def test_receiving_access_and_refresh(self):
         """Test that user can obtain both access and refresh tokens."""
@@ -81,24 +82,11 @@ class TestAccessRefreshTokens(BaseTenantTestCase):
 
 
 class TestUserEndpoints(BaseTenantTestCase):
-    """Test class for routes '/user/' and '/user/me/'."""
+    """Test class for routes '/user/'."""
 
     def setUp(self):
         """Set up method for tests."""
         super().setUp()
-
-        self.test_user_data = {
-            "email": "user@test.com",
-            "password": "test123456",
-            "profile": {
-                "first_name": "Test",
-                "middle_name": "Test",
-                "last_name": "Test",
-                "phone": "+79990008877",
-                "birth_date": timezone.now().date()
-            }
-        }
-        self.user = User.objects.register(**self.test_user_data)
         dummy_user_data = {
             "email": "user%d@test.com",
             "password": "Test123456"
@@ -152,3 +140,48 @@ class TestUserEndpoints(BaseTenantTestCase):
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["email"], self.user.email)
+
+
+class TestUserMeEndpoints(BaseTenantTestCase):
+    """Test class for routes '/user/me/'."""
+
+    def setUp(self):
+        """Set up method for tests."""
+        super().setUp()
+
+    def test_get_users_own_data(self):
+        """Test if it`s possible for user to get his own data."""
+        self.c.force_login(self.user)
+        url = reverse("user-data")
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], self.user.id)
+        self.assertEqual(response.data["email"], self.user.email)
+
+    def test_change_users_own_data(self):
+        """Test if it`s possible for user to update his own data."""
+        self.c.force_login(self.user)
+        url = reverse("user-profile-update")
+        data = {
+            "first_name": "New_name",
+            "middle_name": "New_middle_name",
+            "last_name": "New_last_name",
+            "phone": "+78005553535",
+            "birth_date": timezone.now().date() - timedelta(days=1)
+        }
+        response = self.c.patch(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        for key in data:
+            self.assertEqual(
+                data[key],
+                getattr(self.user.profile, key)
+            )
+
+    def test_user_hard_delete(self):
+        """Test if it`s possible for user to delete himself from system."""
+        self.c.force_login(self.user)
+        url = reverse("user-data")
+        response = self.c.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(User.objects.filter(id=self.user.id).exists())
