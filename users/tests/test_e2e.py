@@ -7,7 +7,7 @@ from django.utils import timezone
 from django_tenants.test.cases import TenantTestCase
 from django_tenants.test.client import TenantClient
 
-from users.models import Contact, User
+from users.models import Contact, Profile, User
 
 
 class BaseTenantTestCase(TenantTestCase):
@@ -269,4 +269,25 @@ class TestUserContacts(BaseTenantTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             self.user.contacts.get(id=contact_to_make_favorite.id).favorite
+        )
+
+    def test_contacts_bulk_creation(self):
+        """Testing contact bulk creation functionality."""
+        self.c.force_login(self.user)
+        old_number_of_contacts = self.user.contacts.count()
+        url = reverse("user-contacts-bulk-create")
+        data = {
+            "phone_numbers":
+                list(
+                    Profile.objects.exclude(user=self.user).values_list(
+                        "phone", flat=True
+                    )
+                )
+        }
+        response = self.c.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+        self.assertGreater(
+            self.user.contacts.count(),
+            old_number_of_contacts,
+            msg="Number of users contacts did not increase"
         )
