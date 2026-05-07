@@ -227,6 +227,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Banking API",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
     "SERVE_PUBLIC": True,
     "SERVERS": [
         {

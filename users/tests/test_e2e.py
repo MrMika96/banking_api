@@ -1,13 +1,16 @@
 """Module for e2e testing for users app."""
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django_tenants.test.cases import TenantTestCase
 from django_tenants.test.client import TenantClient
 
-from users.models import Contact, Profile, User
+from users.models import Contact, Profile
+
+User = get_user_model()
 
 
 class BaseTenantTestCase(TenantTestCase):
