@@ -110,19 +110,17 @@ class UserCredentialsUpdateSerializer(serializers.Serializer):
             raise ValidationError("User with that email already exists")
         return self.Meta.model.objects.normalize_email(email)
 
-    def validate_password(self, password: str) -> str:
+    def validate_password(self, password: str) -> None:
         """Validate entered password."""
         old_password = self.initial_data.get("old_password")
         user = self.context["request"].user
-        if not old_password:
-            return password
-        if not user.check_password(old_password):
-            raise ValidationError("Old password you entered was incorrect")
-        if password == old_password:
-            raise ValidationError("New password is the same as an old one")
-        if not password:
+        if old_password:
+            if not user.check_password(old_password):
+                raise ValidationError("Old password you entered was incorrect")
+            if password == old_password:
+                raise ValidationError("New password is the same as an old one")
+        elif not password:
             raise ValidationError("To change password you must enter new one")
-        return password
 
 
 class MaintainerSerializer(serializers.ModelSerializer):
@@ -215,6 +213,16 @@ class ContactSerializer(serializers.ModelSerializer):
         ):
             raise ValidationError("This contact already exists")
         return contact_id
+
+
+class UpdateContactSerializer(serializers.ModelSerializer):
+    """Serializer for contact status updates."""
+
+    class Meta:
+        """Meta."""
+
+        model = Contact
+        fields = ["favorite"]
 
 
 class ContactSerializerShort(serializers.ModelSerializer):

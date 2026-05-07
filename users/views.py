@@ -18,6 +18,7 @@ from users.serializers import (
     ContactSerializerShort,
     ProfileSerializer,
     RepresentationContactBulkCreateSerializer,
+    UpdateContactSerializer,
     UserCredentialsUpdateSerializer,
     UserMeSerializer,
     UserRegisterSerializer,
@@ -177,6 +178,8 @@ class ContactViewSet(viewsets.ModelViewSet):
         """Return serializer based on type of request."""
         if not self.kwargs.get("pk") and self.request.method == "GET":
             return ContactSerializerShort
+        if self.request.method == "PUT":
+            return UpdateContactSerializer
         return super().get_serializer_class()
 
 

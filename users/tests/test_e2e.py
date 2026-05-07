@@ -1,12 +1,13 @@
 """Module for e2e testing for users app."""
 from datetime import timedelta
 
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django_tenants.test.cases import TenantTestCase
 from django_tenants.test.client import TenantClient
 
-from users.models import User
+from users.models import Contact, User
 
 
 class BaseTenantTestCase(TenantTestCase):
@@ -185,3 +186,87 @@ class TestUserMeEndpoints(BaseTenantTestCase):
         response = self.c.delete(url)
         self.assertEqual(response.status_code, 204)
         self.assertFalse(User.objects.filter(id=self.user.id).exists())
+
+
+class TestUserContacts(BaseTenantTestCase):
+    """Tests for user contacts functionality."""
+
+    def setUp(self):
+        """Set up method for tests."""
+        super().setUp()
+        dummy_user_data = {
+            "email": "user%d@test.com",
+            "password": "test123456"
+        }
+        for i in range(10):
+            dummy_user_profile = {
+                "first_name": "Test%d" % i,
+                "middle_name": "Test%d" % i,
+                "last_name": "Test%d" % i,
+                "phone": "+7999000887%d" % i,
+                "birth_date": timezone.now().date()
+            }
+            User.objects.register(
+                email=dummy_user_data["email"] % i,
+                password=dummy_user_data["password"],
+                profile=dummy_user_profile
+            )
+        for future_contact in User.objects.all()[:5]:
+            Contact.objects.create(user=self.user, contact=future_contact)
+
+    def test_get_users_contact_list(self):
+        """Testing getting full list of user contacts."""
+        self.c.force_login(self.user)
+        url = reverse("contacts-list")
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_new_contact(self):
+        """Testing adding new contact to user contacts."""
+        self.c.force_login(self.user)
+        old_number_of_contacts = self.user.contacts.count()
+        contact_list = list(
+            self.user.contacts.values_list("contact_id", flat=True)
+        )
+        new_contact = User.objects.filter(~Q(id__in=contact_list)).first()
+        url = reverse("contacts-list")
+        data = {
+            "contact_id": new_contact.id,
+            "favorite": True
+        }
+        response = self.c.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+        self.assertGreater(
+            self.user.contacts.count(),
+            old_number_of_contacts,
+            msg="Number of users contacts did not increase"
+        )
+
+    def test_remove_users_contact(self):
+        """Testing removing unwanted contact from user contacts."""
+        self.c.force_login(self.user)
+        old_number_of_contacts = self.user.contacts.count()
+        contact_to_remove = self.user.contacts.first()
+        url = reverse("contacts-detail", kwargs={"pk": contact_to_remove.id})
+        response = self.c.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertGreater(
+            old_number_of_contacts,
+            self.user.contacts.count(),
+            msg="Number of users contacts did not decrease"
+        )
+
+    def test_changing_favorite_status_of_a_contact(self):
+        """Test functionality of making users contact favorite."""
+        self.c.force_login(self.user)
+        contact_to_make_favorite = self.user.contacts.first()
+        url = reverse(
+            "contacts-detail",
+            kwargs={"pk": contact_to_make_favorite.id}
+        )
+        data = {"favorite": True}
+        response = self.c.put(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            self.user.contacts.get(id=contact_to_make_favorite.id).favorite
+        )
