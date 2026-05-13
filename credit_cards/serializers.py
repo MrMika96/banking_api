@@ -129,7 +129,7 @@ class ChangeCardCurrencySerializer(serializers.ModelSerializer):
         fields = ["currency"]
 
     def update(self, instance, validated_data):
-        """Update credit card balance."""
+        """Update credit card currency."""
         balance = CreditCard.change_balance_by_currency(
             instance.currency, validated_data["currency"], instance.balance
         )
