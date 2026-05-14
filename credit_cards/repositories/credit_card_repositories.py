@@ -1,4 +1,4 @@
-"""repository module for credit cards app."""
+"""repositories module for credit cards app."""
 
 from collections import OrderedDict
 from datetime import timedelta

@@ -1,4 +1,4 @@
-"""Unit tests for user repository module."""
+"""Unit tests for user repositories module."""
 from collections import OrderedDict
 
 from django.contrib.auth import get_user_model
@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from ..models import Contact
-from ..repository.user_repositories import UserRepository
+from ..repositories.user_repositories import UserRepository
 
 User = get_user_model()
 
@@ -218,7 +218,7 @@ class UserRepositoryBulkCreateContactsTest(TestCase):
 
 
 class UserRepositoryEdgeCasesTest(TestCase):
-    """Tests for edge cases in repository."""
+    """Tests for edge cases in repositories."""
 
     def setUp(self):
         """Set up test environment."""

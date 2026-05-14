@@ -2,7 +2,7 @@
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 
-from ..repository.user_repositories import UserRepository
+from ..repositories.user_repositories import UserRepository
 
 if TYPE_CHECKING:
     from ..models import User

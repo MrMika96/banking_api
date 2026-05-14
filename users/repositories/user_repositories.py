@@ -1,4 +1,4 @@
-"""repository module for user app."""
+"""repositories module for user app."""
 from collections import OrderedDict
 
 from django.db.transaction import atomic
