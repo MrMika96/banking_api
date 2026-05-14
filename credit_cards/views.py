@@ -2,6 +2,7 @@
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from credit_cards.models import CreditCard
 from credit_cards.serializers import (
@@ -12,6 +13,7 @@ from credit_cards.serializers import (
     TransferFromCardToCardSerializer,
 )
 from . import docs
+from .services.credit_card_services import update_credit_card_currency
 
 
 @extend_schema_view(**docs.get_credit_card_docs())
@@ -47,13 +49,28 @@ class CreditCardMoneyTransferView(generics.CreateAPIView):
 
 
 @extend_schema_view(**docs.get_credit_card_currency_change_docs())
-class CreditCardChangeCurrencyView(generics.UpdateAPIView):
+class CreditCardChangeCurrencyView(generics.GenericAPIView):
     """Change credit card currency."""
 
     queryset = CreditCard.objects.all()
     serializer_class = ChangeCardCurrencySerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ["put"]
+
+    def put(self, request, pk):
+        """Return new currency of a credit card after it got changed."""
+        currency_data = self.get_serializer(data=request.data)
+        currency_data.is_valid(raise_exception=True)
+
+        return Response(
+            data=self.get_serializer(
+                update_credit_card_currency(
+                    credit_card_pk=pk,
+                    currency_data=currency_data.validated_data
+                )
+            ).data,
+            status=200
+        )
 
 
 @extend_schema_view(**docs.get_credit_card_balance_replenishment_docs())

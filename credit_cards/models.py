@@ -4,6 +4,7 @@ import random
 import string
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from forex_python.converter import CurrencyRates, RatesNotAvailableError
 
 from banks.models import Currency
@@ -12,13 +13,15 @@ from banks.models import Currency
 class CreditCard(models.Model):
     """Model of a credit card."""
 
-    CURRENCY_CHOICES = [
-        ("USD", "USD"),
-        ("EUR", "EUR"),
-        ("JPY", "JPY"),
-        ("RUB", "RUB"),
-        ("CNY", "CNY"),
-    ]
+    class Currency(models.TextChoices):
+        """Choices of currency types."""
+
+        USD = "USD", _("US Dollar")
+        EUR = "EUR", _("Euro")
+        JPY = "JPY", _("Japanese Yen")
+        RUB = "RUB", _("Russian Ruble")
+        CNY = "CNY", _("Chinese Yuan")
+
     owner = models.ForeignKey(
         "users.User", related_name="credit_cards", on_delete=models.CASCADE
     )
@@ -33,7 +36,7 @@ class CreditCard(models.Model):
         "banks.PaymentSystem", related_name="cards", on_delete=models.CASCADE
     )
     currency = models.CharField(
-        max_length=16, choices=CURRENCY_CHOICES, blank=True, default=None
+        max_length=3, choices=Currency.choices, default=Currency.RUB
     )
     balance = models.DecimalField(
         max_digits=10,

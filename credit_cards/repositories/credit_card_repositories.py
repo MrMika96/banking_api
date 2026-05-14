@@ -47,8 +47,8 @@ class CreditCardRepository:
         credit_card_instance.save(update_fields=["currency", "balance"])
         return credit_card_instance
 
+    @staticmethod
     def replenish_credit_card_balance(
-        self,
         credit_card_instance: CreditCard,
         credit_card_data: OrderedDict
     ) -> CreditCard:
@@ -63,6 +63,10 @@ class CreditCardRepository:
     def get_credit_card_by_number(self, card_number: int) -> CreditCard:
         """Return credit card instance by it`s number."""
         return get_object_or_404(self.model, number=card_number)
+
+    def get_credit_card_by_pk(self, pk: int) -> CreditCard:
+        """Return credit card instance by it`s pk."""
+        return get_object_or_404(self.model, pk=pk)
 
     @atomic
     def transfer_money_from_one_card_to_another(
@@ -85,4 +89,3 @@ class CreditCardRepository:
         to_card.balance = to_card.balance + sum_of_money
         to_card.full_clean()
         to_card.save(update_fields=["balance"])
-        return to_card

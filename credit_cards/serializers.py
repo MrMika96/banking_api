@@ -118,26 +118,11 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
 class ChangeCardCurrencySerializer(serializers.ModelSerializer):
     """Serializer for changing credit card currency."""
 
-    currency = serializers.CharField(
-        required=False, allow_null=True, default=None
-    )
-
     class Meta:
         """Meta."""
 
         model = CreditCard
         fields = ["currency"]
-
-    def update(self, instance, validated_data):
-        """Update credit card currency."""
-        balance = CreditCard.change_balance_by_currency(
-            instance.currency, validated_data["currency"], instance.balance
-        )
-        instance.currency = validated_data["currency"]
-        instance.balance = balance
-        instance.full_clean()
-        instance.save(update_fields=["currency", "balance"])
-        return instance
 
 
 class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
