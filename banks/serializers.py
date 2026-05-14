@@ -7,11 +7,19 @@ from banks.models import Bank, PaymentSystem
 class BanksSerializer(serializers.ModelSerializer):
     """Serializer for banks."""
 
+    bank_type_display = serializers.CharField(
+        source="get_bank_type_display",
+        read_only=True,
+    )
+
     class Meta:
         """Meta."""
 
         model = Bank
-        fields = ["id", "name", "bank_type", "number"]
+        fields = ["id", "name", "bank_type", "bank_type_display", "number"]
+        extra_kwargs = {
+            "bank_type": {"write_only": True}
+        }
 
 
 class DetailedBankSerializer(serializers.ModelSerializer):
