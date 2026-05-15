@@ -1,10 +1,8 @@
 """Module with serializers for credit card app."""
 from _decimal import Decimal
-import datetime
 
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -101,18 +99,6 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
             "balance",
         ]
         read_only_fields = ["number", "cvv", "is_expired"]
-
-    def create(self, validated_data):
-        """Create credit card."""
-        validated_data["number"] = CreditCard.card_number_generator(
-            validated_data["bank"].number,
-            validated_data["payment_system"].number
-        )
-        validated_data["cvv"] = CreditCard.cvv_generator()
-        validated_data["expiration_date"] = (
-                timezone.now().date() + datetime.timedelta(days=1825)
-        )
-        return CreditCard.objects.create(**validated_data)
 
 
 class ChangeCardCurrencySerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 """Module with views for credit cards app."""
 from drf_spectacular.utils import extend_schema_view
-from rest_framework import generics, viewsets
+from rest_framework import generics, mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -14,13 +14,20 @@ from credit_cards.serializers import (
 )
 from . import docs
 from .services.credit_card_services import (
+    create_credit_card,
     replenish_credit_card_balance,
     update_credit_card_currency
 )
 
 
 @extend_schema_view(**docs.get_credit_card_docs())
-class CreditCardViewSet(viewsets.ModelViewSet):
+class CreditCardViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     """Credit card view set."""
 
     queryset = CreditCard.objects.all()
@@ -40,6 +47,17 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         if self.action == "create": # noqa
             return CreditCardCreateSerializer
         return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        """Return newly created credit card object."""
+        credit_card_data = self.get_serializer(data=request.data)
+        credit_card_data.is_valid(raise_exception=True)
+        return Response(
+            data=self.get_serializer(
+                create_credit_card(credit_card_data.validated_data)
+            ).data,
+            status=201
+        )
 
 
 @extend_schema_view(**docs.get_credit_card_transfer_docs())
