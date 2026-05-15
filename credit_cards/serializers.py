@@ -141,19 +141,6 @@ class CardBalanceReplenishmentSerializer(serializers.ModelSerializer):
         model = CreditCard
         fields = ["balance"]
 
-    def validate_balance(self, balance):
-        """Validate balance."""
-        if balance < 0:
-            raise ValidationError("Balance can`t be negative number")
-        return balance
-
-    def update(self, instance, validated_data):
-        """Update balance of a credit card."""
-        instance.balance = instance.balance + validated_data["balance"]
-        instance.full_clean()
-        instance.save(update_fields=["balance"])
-        return instance
-
 
 class TransferFromCardToCardSerializer(serializers.Serializer):
     """Serializer for money transferring between two cards."""

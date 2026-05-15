@@ -13,7 +13,10 @@ from credit_cards.serializers import (
     TransferFromCardToCardSerializer,
 )
 from . import docs
-from .services.credit_card_services import update_credit_card_currency
+from .services.credit_card_services import (
+    replenish_credit_card_balance,
+    update_credit_card_currency
+)
 
 
 @extend_schema_view(**docs.get_credit_card_docs())
@@ -74,10 +77,24 @@ class CreditCardChangeCurrencyView(generics.GenericAPIView):
 
 
 @extend_schema_view(**docs.get_credit_card_balance_replenishment_docs())
-class CreditCardBalanceReplenishmentView(generics.UpdateAPIView):
+class CreditCardBalanceReplenishmentView(generics.GenericAPIView):
     """Replenish credit card balance."""
 
     queryset = CreditCard.objects.all()
     serializer_class = CardBalanceReplenishmentSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ["put"]
+
+    def put(self, request, pk):
+        """Return credit card balance after replenishment."""
+        credit_card_data = self.get_serializer(data=request.data)
+        credit_card_data.is_valid(raise_exception=True)
+
+        return Response(
+            data=self.get_serializer(
+                replenish_credit_card_balance(
+                    credit_card_pk=pk,
+                    credit_card_data=credit_card_data.validated_data
+                )
+            ).data,
+            status=200
+        )
