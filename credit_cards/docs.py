@@ -1,5 +1,5 @@
 """Module with documentation for credit cards."""
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 CREDIT_CARDS_TAG = "Credit cards"
 
@@ -44,7 +44,10 @@ def get_credit_card_transfer_docs() -> dict:
         "post": extend_schema(
             tags=[CREDIT_CARDS_TAG],
             description="Transfer money from one credit card to another",
-            summary="Transfer money"
+            summary="Transfer money",
+            responses={
+                204: OpenApiResponse(response=None)
+            }
         )
     }
 

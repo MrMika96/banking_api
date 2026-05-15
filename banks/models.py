@@ -1,5 +1,5 @@
 """Module with models for bank app."""
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models
 from django.shortcuts import get_object_or_404
@@ -80,4 +80,7 @@ class Currency(models.Model):
     ) -> Decimal:
         """Return converted balance."""
         convert_to_currency = get_object_or_404(Currency, name=old_currency)
-        return Decimal(convert_to_currency.rates[new_currency] * balance)
+        result = Decimal(
+            str(convert_to_currency.rates[new_currency])
+        ) * balance
+        return result.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)

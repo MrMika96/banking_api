@@ -16,6 +16,7 @@ from . import docs
 from .services.credit_card_services import (
     create_credit_card,
     replenish_credit_card_balance,
+    transfer_money_from_one_card_to_another,
     update_credit_card_currency
 )
 
@@ -40,7 +41,7 @@ class CreditCardViewSet(
         qs = super().get_queryset()
         if self.request.method == "GET":
             qs = qs.filter(owner=self.request.user)
-        return qs.select_related("bank", "owner")
+        return qs.select_related("bank", "owner").order_by("id")
 
     def get_serializer_class(self):
         """Return serializer based on action."""
@@ -48,7 +49,7 @@ class CreditCardViewSet(
             return CreditCardCreateSerializer
         return super().get_serializer_class()
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request):
         """Return newly created credit card object."""
         credit_card_data = self.get_serializer(data=request.data)
         credit_card_data.is_valid(raise_exception=True)
@@ -61,12 +62,23 @@ class CreditCardViewSet(
 
 
 @extend_schema_view(**docs.get_credit_card_transfer_docs())
-class CreditCardMoneyTransferView(generics.CreateAPIView):
+class CreditCardMoneyTransferView(generics.GenericAPIView):
     """Transfer money from one card to another."""
 
     queryset = CreditCard.objects.all()
     serializer_class = TransferFromCardToCardSerializer
     permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """Money transfer operation from one card to another."""
+        transaction_data = self.get_serializer(data=request.data)
+        transaction_data.is_valid(raise_exception=True)
+        transfer_money_from_one_card_to_another(
+            money_transaction_data=transaction_data.validated_data
+        )
+        return Response(
+            status=204
+        )
 
 
 @extend_schema_view(**docs.get_credit_card_currency_change_docs())

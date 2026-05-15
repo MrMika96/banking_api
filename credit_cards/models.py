@@ -1,5 +1,5 @@
 """Module with models for credit card app."""
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import random
 import string
 
@@ -75,6 +75,9 @@ class CreditCard(models.Model):
             return balance
         rates = CurrencyRates()
         try:
-            return rates.convert(old_currency, new_currency, balance)
+            result = rates.convert(
+                old_currency, new_currency, balance
+            )
+            return result.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         except RatesNotAvailableError:
             return Currency.convert(old_currency, new_currency, balance)

@@ -1,8 +1,6 @@
 """Module with serializers for credit card app."""
 from _decimal import Decimal
 
-from django.db.transaction import atomic
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -172,34 +170,3 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
         ):
             raise ValidationError("Insufficient funds")
         return sum_of_money
-
-    def to_representation(self, instance):
-        """Return simple message instead of an object."""
-        return {"status": "Complete!"}
-
-    @atomic
-    def create(self, validated_data):
-        """Transfer money from one card to another."""
-        to_card = get_object_or_404(
-            CreditCard, number=validated_data["to_card_number"]
-        )
-        from_card = get_object_or_404(
-            CreditCard, number=validated_data["from_card_number"]
-        )
-        from_card.balance = from_card.balance - validated_data["sum_of_money"]
-        from_card.full_clean()
-        from_card.save(update_fields=["balance"])
-        if to_card.currency != from_card.currency:
-            to_card.balance = (
-                    to_card.balance +
-                    CreditCard.change_balance_by_currency(
-                        from_card.currency,
-                        to_card.currency,
-                        validated_data["sum_of_money"]
-                    )
-            )
-        else:
-            to_card.balance = to_card.balance + validated_data["sum_of_money"]
-        to_card.full_clean()
-        to_card.save(update_fields=["balance"])
-        return to_card

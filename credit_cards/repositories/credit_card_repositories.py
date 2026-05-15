@@ -86,6 +86,10 @@ class CreditCardRepository:
         ) if to_card.currency != from_card.currency else operation_data[
             "sum_of_money"
         ]
+        print("AAAAAAAAФAAA")
+        print(to_card.balance)
+        print(sum_of_money)
+        print(to_card.balance + sum_of_money)
         to_card.balance = to_card.balance + sum_of_money
         to_card.full_clean()
         to_card.save(update_fields=["balance"])
