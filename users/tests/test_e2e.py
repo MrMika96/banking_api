@@ -13,7 +13,7 @@ from users.models import Contact, Profile
 User = get_user_model()
 
 
-class BaseTenantTestCase(TenantTestCase):
+class BaseUsersTenantTestCase(TenantTestCase):
     """Parent class for all tests."""
 
     def setUp(self):
@@ -37,7 +37,7 @@ class BaseTenantTestCase(TenantTestCase):
         self.user = User.objects.register(**self.test_user_data)
 
 
-class TestAccessRefreshTokens(BaseTenantTestCase):
+class TestAccessRefreshTokens(BaseUsersTenantTestCase):
     """Test suite for JWT access and refresh token authentication flow."""
 
     def setUp(self):
@@ -85,7 +85,7 @@ class TestAccessRefreshTokens(BaseTenantTestCase):
         self.assertIn("access", response.data)
 
 
-class TestUserEndpoints(BaseTenantTestCase):
+class TestUserEndpoints(BaseUsersTenantTestCase):
     """Test class for routes '/user/'."""
 
     def setUp(self):
@@ -146,7 +146,7 @@ class TestUserEndpoints(BaseTenantTestCase):
         self.assertEqual(response.data["email"], self.user.email)
 
 
-class TestUserMeEndpoints(BaseTenantTestCase):
+class TestUserMeEndpoints(BaseUsersTenantTestCase):
     """Test class for routes '/user/me/'."""
 
     def setUp(self):
@@ -191,7 +191,7 @@ class TestUserMeEndpoints(BaseTenantTestCase):
         self.assertFalse(User.objects.filter(id=self.user.id).exists())
 
 
-class TestUserContacts(BaseTenantTestCase):
+class TestUserContacts(BaseUsersTenantTestCase):
     """Tests for user contacts functionality."""
 
     def setUp(self):

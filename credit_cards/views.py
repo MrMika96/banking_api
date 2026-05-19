@@ -45,7 +45,7 @@ class CreditCardViewSet(
 
     def get_serializer_class(self):
         """Return serializer based on action."""
-        if self.action == "create": # noqa
+        if self.action in ["create", "update", "partial_update"]: # noqa
             return CreditCardCreateSerializer
         return super().get_serializer_class()
 

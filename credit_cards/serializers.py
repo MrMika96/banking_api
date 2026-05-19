@@ -69,12 +69,6 @@ class CreditCardCreateSerializer(serializers.ModelSerializer):
     payment_system_name = serializers.CharField(
         source="payment_system.name", read_only=True
     )
-    bank = serializers.PrimaryKeyRelatedField(
-        queryset=Bank.objects.all(), write_only=True
-    )
-    payment_system = serializers.PrimaryKeyRelatedField(
-        queryset=PaymentSystem.objects.all(), write_only=True
-    )
     balance = serializers.DecimalField(
         max_digits=10, decimal_places=2, default=0, required=False
     )
@@ -142,20 +136,6 @@ class TransferFromCardToCardSerializer(serializers.Serializer):
         write_only=True,
         min_value=Decimal(0.0)
     )
-
-    def validate_from_card_number(self, from_card_number):
-        """Validate credit giving credit card number."""
-        if not CreditCard.objects.filter(
-            number=from_card_number, owner=self.context["request"].user
-        ).exists():
-            raise ValidationError(detail="Card with this number is not found")
-        return from_card_number
-
-    def validate_to_card_number(self, to_card_number):
-        """Validate credit receiving credit card number."""
-        if not CreditCard.objects.filter(number=to_card_number).exists():
-            raise ValidationError(detail="Card with this number is not found")
-        return to_card_number
 
     def validate_sum_of_money(self, sum_of_money):
         """Validate sum of money."""
