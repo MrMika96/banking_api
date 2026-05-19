@@ -95,7 +95,12 @@ class Profile(models.Model):
     def age(self) -> int | None:
         """Calculate users age."""
         if self.birth_date:
-            return timezone.now().year - self.birth_date.year
+            today = timezone.now().date()
+            is_birthday_not_yet = (
+                    (today.month, today.day) <
+                    (self.birth_date.month, self.birth_date.day)
+            )
+            return today.year - self.birth_date.year - is_birthday_not_yet
         return None
 
     @staticmethod
@@ -131,6 +136,12 @@ class Profile(models.Model):
             "numbers and start with a plus sign!"
         )
         raise ValidationError(msg)
+
+    def save(self, *args, **kwargs):
+        """Save new object to database with phone normalization."""
+        if self.phone:
+            self.phone = self.normalize_phone(self.phone)
+        super().save(*args, **kwargs)
 
 
 class Contact(models.Model):

@@ -25,10 +25,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             "image"
         ]
 
-    def validate_phone(self, phone: str):
-        """Validate phone number."""
-        return self.Meta.model.normalize_phone(phone) if phone else phone
-
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     """Serializer for users registration in a system."""
@@ -44,12 +40,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "password", "profile"]
         read_only_fields = ["id"]
-
-    def validate_email(self, email):
-        """Validate users email."""
-        if self.Meta.model.objects.filter(email=email).exists():
-            raise ValidationError(detail="User with that email already exists")
-        return self.Meta.model.objects.normalize_email(email)
 
 
 class UserMeSerializer(serializers.ModelSerializer):
@@ -103,12 +93,6 @@ class UserCredentialsUpdateSerializer(serializers.Serializer):
 
         model = User
         fields = ["email", "password", "old_password"]
-
-    def validate_email(self, email: str) -> str:
-        """Validate entered email."""
-        if self.Meta.model.objects.filter(email=email).exists():
-            raise ValidationError("User with that email already exists")
-        return self.Meta.model.objects.normalize_email(email)
 
     def validate_password(self, password: str) -> None:
         """Validate entered password."""
