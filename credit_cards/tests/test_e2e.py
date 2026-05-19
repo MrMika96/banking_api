@@ -66,6 +66,7 @@ class BaseCreditCardTenantTestCase(TenantTestCase):
         }
         for card in [self.credit_card_1, self.credit_card_2]:
             CreditCard.objects.create(**card)
+        self.c.force_login(self.user)
 
 
 class TestCreditCards(BaseCreditCardTenantTestCase):
@@ -81,7 +82,6 @@ class TestCreditCards(BaseCreditCardTenantTestCase):
 
     def test_get_credit_card_by_id(self):
         """Testing getting credit card by it`s id."""
-        self.c.force_login(self.user)
         credit_card = self.user.credit_cards.first()
         url = reverse("credit-card-detail", kwargs={"pk": credit_card.id})
         response = self.c.get(url)
@@ -90,7 +90,6 @@ class TestCreditCards(BaseCreditCardTenantTestCase):
 
     def test_update_credit_card_data(self):
         """Test partial update functionality for credit cards."""
-        self.c.force_login(self.user)
         credit_card = self.user.credit_cards.first()
         new_credit_card_data = {
             "expiration_date": date(2026, 5, 19),
@@ -128,7 +127,6 @@ class TestCreditCards(BaseCreditCardTenantTestCase):
 
     def test_credit_card_creation(self):
         """Test create functionality for credit cards."""
-        self.c.force_login(self.user)
         old_number_of_credit_cards = self.user.credit_cards.count()
         new_credit_card_data = {
             "expiration_date": date(2026, 5, 19),
@@ -151,7 +149,6 @@ class TestCreditCards(BaseCreditCardTenantTestCase):
 
     def test_credit_card_deletion(self):
         """Test delete functionality for credit cards."""
-        self.c.force_login(self.user)
         old_number_of_credit_cards = self.user.credit_cards.count()
         credit_card = self.user.credit_cards.first()
         url = reverse("credit-card-detail", kwargs={"pk": credit_card.id})

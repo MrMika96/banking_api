@@ -152,10 +152,10 @@ class TestUserMeEndpoints(BaseUsersTenantTestCase):
     def setUp(self):
         """Set up method for tests."""
         super().setUp()
+        self.c.force_login(self.user)
 
     def test_get_users_own_data(self):
         """Test if it`s possible for user to get his own data."""
-        self.c.force_login(self.user)
         url = reverse("user-data")
         response = self.c.get(url)
         self.assertEqual(response.status_code, 200)
@@ -164,7 +164,6 @@ class TestUserMeEndpoints(BaseUsersTenantTestCase):
 
     def test_change_users_own_data(self):
         """Test if it`s possible for user to update his own data."""
-        self.c.force_login(self.user)
         url = reverse("user-profile-update")
         data = {
             "first_name": "New_name",
@@ -184,7 +183,6 @@ class TestUserMeEndpoints(BaseUsersTenantTestCase):
 
     def test_user_hard_delete(self):
         """Test if it`s possible for user to delete himself from system."""
-        self.c.force_login(self.user)
         url = reverse("user-data")
         response = self.c.delete(url)
         self.assertEqual(response.status_code, 204)
@@ -216,17 +214,16 @@ class TestUserContacts(BaseUsersTenantTestCase):
             )
         for future_contact in User.objects.all()[:5]:
             Contact.objects.create(user=self.user, contact=future_contact)
+        self.c.force_login(self.user)
 
     def test_get_users_contact_list(self):
         """Testing getting full list of user contacts."""
-        self.c.force_login(self.user)
         url = reverse("contacts-list")
         response = self.c.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_add_new_contact(self):
         """Testing adding new contact to user contacts."""
-        self.c.force_login(self.user)
         old_number_of_contacts = self.user.contacts.count()
         contact_list = list(
             self.user.contacts.values_list("contact_id", flat=True)
@@ -247,7 +244,6 @@ class TestUserContacts(BaseUsersTenantTestCase):
 
     def test_remove_users_contact(self):
         """Testing removing unwanted contact from user contacts."""
-        self.c.force_login(self.user)
         old_number_of_contacts = self.user.contacts.count()
         contact_to_remove = self.user.contacts.first()
         url = reverse("contacts-detail", kwargs={"pk": contact_to_remove.id})
@@ -261,7 +257,6 @@ class TestUserContacts(BaseUsersTenantTestCase):
 
     def test_changing_favorite_status_of_a_contact(self):
         """Test functionality of making users contact favorite."""
-        self.c.force_login(self.user)
         contact_to_make_favorite = self.user.contacts.first()
         url = reverse(
             "contacts-detail",
@@ -276,7 +271,6 @@ class TestUserContacts(BaseUsersTenantTestCase):
 
     def test_contacts_bulk_creation(self):
         """Testing contact bulk creation functionality."""
-        self.c.force_login(self.user)
         old_number_of_contacts = self.user.contacts.count()
         url = reverse("user-contacts-bulk-create")
         data = {
