@@ -60,4 +60,4 @@ jobs:
 
       - name: Run tests
         run: |
-          python manage.py test --parallel --verbosity=2
+          python manage.py test --verbosity=2
