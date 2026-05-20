@@ -42,7 +42,7 @@ def transfer_money_from_one_card_to_another(
 ):
     """Transfer money from one card to another by their numbers."""
     card_repo = CreditCardRepository()
-    non_existent_card_number = 0
+    non_existent_card_number = "0"
     from_card = card_repo.get_credit_card_by_number(
         money_transaction_data.pop(
             "from_card_number",

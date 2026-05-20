@@ -60,7 +60,7 @@ class CreditCardRepository:
         credit_card_instance.save(update_fields=["balance"])
         return credit_card_instance
 
-    def get_credit_card_by_number(self, card_number: int) -> CreditCard:
+    def get_credit_card_by_number(self, card_number: str) -> CreditCard:
         """Return credit card instance by it`s number."""
         return get_object_or_404(self.model, number=card_number)
 
