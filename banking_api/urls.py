@@ -21,7 +21,6 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("banks/", include("banks.urls")),
     path("credit_cards/", include("credit_cards.urls")),
-    path("images/", include("images.urls")),
     path("admin/", admin.site.urls),
     path(
         "api-auth/",
