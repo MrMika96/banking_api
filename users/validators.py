@@ -1,3 +1,5 @@
+"""Module with custom validators for users app."""
+
 from django.core.exceptions import ValidationError
 from PIL import Image as PILImage
 
