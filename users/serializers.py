@@ -2,14 +2,11 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, ValidationError
 
-from images.serializers import ImageSerializer
 from users.models import Contact, Profile, User
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer for a profile."""
-
-    image = ImageSerializer(allow_null=True, read_only=True)
 
     class Meta:
         """Meta."""
@@ -22,8 +19,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone",
             "birth_date",
             "age",
-            "image"
+            "profile_image",
+            "profile_image_url"
         ]
+        read_only_fields = ["profile_image_url"]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -129,7 +128,6 @@ class ContactProfileSerializer(serializers.ModelSerializer):
     """Serializer for a contacts profile."""
 
     contact_id = serializers.IntegerField(source="user_id", read_only=True)
-    image = ImageSerializer(allow_null=True, read_only=True)
     email = serializers.EmailField(source="user.email", read_only=True)
 
     class Meta:
@@ -141,23 +139,31 @@ class ContactProfileSerializer(serializers.ModelSerializer):
             "first_name",
             "middle_name",
             "last_name",
-            "image",
+            "profile_image",
+            "profile_image_url",
             "email",
             "phone",
         ]
+        read_only_fields = ["profile_image_url"]
 
 
 class ContactProfileShortSerializer(serializers.ModelSerializer):
     """Short serializer for a contacts profile."""
 
     contact_id = serializers.IntegerField(source="user_id", read_only=True)
-    image = ImageSerializer(allow_null=True, read_only=True)
 
     class Meta:
         """Meta."""
 
         model = Profile
-        fields = ["contact_id", "first_name", "last_name", "image"]
+        fields = [
+            "contact_id",
+            "first_name",
+            "last_name",
+            "profile_image",
+            "profile_image_url"
+        ]
+        read_only_fields = ["profile_image_url"]
 
 
 class ContactSerializer(serializers.ModelSerializer):

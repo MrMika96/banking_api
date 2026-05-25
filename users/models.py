@@ -1,10 +1,14 @@
 """Module with models for user app."""
+import base64
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager as DefaultUserManager
 from django.db import models
 from django.db.transaction import atomic
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
+
+from .validators import validate_profile_image
 
 
 class UserManager(models.Manager):
@@ -71,13 +75,11 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True
     )
-    profile_image = models.OneToOneField(
-        "images.Image",
-        related_name="profile",
-        on_delete=models.SET_NULL,
+    profile_image = models.BinaryField(
         blank=True,
         null=True,
-        default=None
+        default=None,
+        validators=[validate_profile_image]
     )
 
     class Meta:
@@ -101,6 +103,16 @@ class Profile(models.Model):
                     (self.birth_date.month, self.birth_date.day)
             )
             return today.year - self.birth_date.year - is_birthday_not_yet
+        return None
+
+    @property
+    def profile_image_url(self) -> str | None:
+        """Return base64 data URL for frontend."""
+        if self.profile_image:
+            return (
+                "data:image/jpeg;base64,"
+                f"{base64.b64encode(self.profile_image).decode()}"
+            )
         return None
 
     @staticmethod
