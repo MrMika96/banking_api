@@ -5,6 +5,7 @@ from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -38,11 +39,14 @@ class UserAuthView(TokenObtainPairView):
     """View for user authentication in API."""
 
     serializer_class = TokenObtainPairSerializer
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
 
 @extend_schema_view(**docs.get_user_auth_refresh_docs())
 class UserAuthRefreshView(TokenRefreshView):
     """View what takes refresh token and returns access token."""
+
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
 
 @extend_schema_view(**docs.get_user_me_docs())
@@ -101,6 +105,7 @@ class UserRegisterView(generics.GenericAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny]
     authentication_classes = []
+    throttle_classes = [AnonRateThrottle]
 
     def post(self, request):
         """Create new user in a system."""
