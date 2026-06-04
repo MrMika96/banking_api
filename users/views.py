@@ -5,7 +5,7 @@ from drf_spectacular.utils import extend_schema_view
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -39,14 +39,14 @@ class UserAuthView(TokenObtainPairView):
     """View for user authentication in API."""
 
     serializer_class = TokenObtainPairSerializer
-    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    throttle_classes = [AnonRateThrottle]
 
 
 @extend_schema_view(**docs.get_user_auth_refresh_docs())
 class UserAuthRefreshView(TokenRefreshView):
     """View what takes refresh token and returns access token."""
 
-    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    throttle_classes = [AnonRateThrottle]
 
 
 @extend_schema_view(**docs.get_user_me_docs())
