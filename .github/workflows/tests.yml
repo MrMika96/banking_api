@@ -20,6 +20,18 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      # Замените Redis на Valkey
+      valkey:
+        image: valkey/valkey:9.0.3-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -45,7 +57,7 @@ jobs:
       - name: Create .env from example
         run: |
           cp .env.example .env
-          echo "SECRET_KEY=test-key-github-actions" > .env
+          echo "SECRET_KEY=test-key-github-actions" >> .env
           echo "DEBUG=True" >> .env
           echo "LOCAL=True" >> .env
           echo "DB_NAME=test_db" >> .env
@@ -53,6 +65,21 @@ jobs:
           echo "DB_PASSWORD=postgres" >> .env
           echo "DB_HOST=localhost" >> .env
           echo "DB_PORT=5432" >> .env
+          # Добавьте настройки Valkey (используйте REDIS_* для совместимости с django-redis)
+          echo "REDIS_HOST=localhost" >> .env
+          echo "REDIS_PORT=6379" >> .env
+
+      - name: Wait for Valkey to be ready
+        run: |
+          sudo apt-get update && sudo apt-get install -y valkey-tools
+          for i in {1..10}; do
+            if valkey-cli -h localhost -p 6379 ping; then
+              echo "Valkey is ready"
+              break
+            fi
+            echo "Waiting for Valkey... $i"
+            sleep 2
+          done
 
       - name: Run migrations
         run: |
