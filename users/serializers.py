@@ -18,11 +18,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "last_name",
             "phone",
             "birth_date",
-            "age",
-            "profile_image",
-            "profile_image_url"
+            "age"
         ]
-        read_only_fields = ["profile_image_url"]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -139,12 +136,9 @@ class ContactProfileSerializer(serializers.ModelSerializer):
             "first_name",
             "middle_name",
             "last_name",
-            "profile_image",
-            "profile_image_url",
             "email",
             "phone",
         ]
-        read_only_fields = ["profile_image_url"]
 
 
 class ContactProfileShortSerializer(serializers.ModelSerializer):
@@ -159,11 +153,8 @@ class ContactProfileShortSerializer(serializers.ModelSerializer):
         fields = [
             "contact_id",
             "first_name",
-            "last_name",
-            "profile_image",
-            "profile_image_url"
+            "last_name"
         ]
-        read_only_fields = ["profile_image_url"]
 
 
 class ContactSerializer(serializers.ModelSerializer):
